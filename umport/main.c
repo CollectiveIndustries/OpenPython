@@ -10,12 +10,16 @@
 #include "py/gc.h"
 #include "py/mperrno.h"
 #include "py/mphal.h"
+#include "py/lexer.h"
+#include "extmod/vfs.h"
 #include "lib/utils/interrupt_char.h"
 #include "lib/utils/pyexec.h"
 #include "umport_mcu.h"
 #include <math.h>
 
 #define UMPORT_DEBUG(s) (mp_hal_stdout_tx_strn((s), strlen((s))));
+
+mp_uint_t gc_helper_get_regs_and_sp(mp_uint_t *regs);
 
 void do_str(const char *src, mp_parse_input_kind_t input_kind) {
     nlr_buf_t nlr;
@@ -47,7 +51,7 @@ int main(int argc, char **argv) {
         mp_obj_list_append(mp_sys_path, MP_OBJ_NEW_QSTR(MP_QSTR_));
         mp_obj_list_init(mp_sys_argv, 0);
 
-        do_str("for i in range(1):pass", MP_PARSE_FILE_INPUT);
+        do_str("from main import *", MP_PARSE_FILE_INPUT);
 
         for (;;) {
             if (pyexec_mode_kind == PYEXEC_MODE_RAW_REPL) {
@@ -66,27 +70,21 @@ int main(int argc, char **argv) {
     return 0;
 }
 
+mp_import_stat_t mp_import_stat(const char *path) {
+    return mp_vfs_import_stat(path);
+}
+
 void gc_collect(void) {
-    // WARNING: This gc_collect implementation doesn't try to get root
-    // pointers from CPU registers, and thus may function incorrectly.
-    void *dummy;
     gc_collect_start();
-    gc_collect_root(&dummy, ((mp_uint_t)MP_STATE_THREAD(stack_top) - (mp_uint_t)&dummy) / sizeof(mp_uint_t));
+
+    // get the registers and the sp
+    mp_uint_t regs[10];
+    mp_uint_t sp = gc_helper_get_regs_and_sp(regs);
+
+    gc_collect_root((void**)sp, ((mp_uint_t)MP_STATE_THREAD(stack_top) - (mp_uint_t)sp) / sizeof(mp_uint_t));
+
     gc_collect_end();
 }
-
-mp_lexer_t *mp_lexer_new_from_file(const char *filename) {
-    mp_raise_OSError(MP_ENOENT);
-}
-
-mp_import_stat_t mp_import_stat(const char *path) {
-    return MP_IMPORT_STAT_NO_EXIST;
-}
-
-mp_obj_t mp_builtin_open(uint n_args, const mp_obj_t *args, mp_map_t *kwargs) {
-    return mp_const_none;
-}
-MP_DEFINE_CONST_FUN_OBJ_KW(mp_builtin_open_obj, 1, mp_builtin_open);
 
 void nlr_jump_fail(void *val) {
     while (1);
@@ -105,12 +103,12 @@ void MP_WEAK __assert_func(const char *file, int line, const char *func, const c
 
 // this is a minimal IRQ and reset framework for any Cortex-M CPU
 
-extern uint32_t _sidata, _sdata, _edata, _sbss, _ebss;
+extern uint32_t _sidata, _sdata, _edata, _sbss, _ebss, _estack;
 
 void Reset_Handler(void) __attribute__((naked));
 void Reset_Handler(void) {
     // set stack pointer
-    __asm volatile ("ldr r0, =0x08000000");
+    __asm volatile ("ldr r0, =_svec");
     __asm volatile ("ldr sp, [r0]");
     // copy .data section from flash to RAM
     for (uint32_t *src = &_sidata, *dest = &_sdata; dest < &_edata;) {
@@ -136,7 +134,7 @@ void Default_Handler(void) {
 }
 
 const uint32_t isr_vector[] __attribute__((section(".isr_vector"))) = {
-    0, // will be set dynamically
+    (uint32_t)&_estack,
     (uint32_t)&Reset_Handler,
     (uint32_t)&Default_Handler, // NMI_Handler
     (uint32_t)&Default_Handler, // HardFault_Handler

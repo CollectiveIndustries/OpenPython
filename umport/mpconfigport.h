@@ -14,12 +14,12 @@
 #define MICROPY_STACKLESS_STRICT (0)
 
 // MicroPython emitters
-#define MICROPY_PERSISTENT_CODE_LOAD (0)
+#define MICROPY_PERSISTENT_CODE_LOAD (1)
 #define MICROPY_PERSISTENT_CODE_SAVE (0)
-#define MICROPY_EMIT_THUMB (1)
-#define MICROPY_EMIT_INLINE_THUMB (1)
-#define MICROPY_EMIT_INLINE_THUMB_ARMV7M (1)
-#define MICROPY_EMIT_INLINE_THUMB_FLOAT (1)
+#define MICROPY_EMIT_THUMB (0)
+#define MICROPY_EMIT_INLINE_THUMB (0)
+#define MICROPY_EMIT_INLINE_THUMB_ARMV7M (0)
+#define MICROPY_EMIT_INLINE_THUMB_FLOAT (0)
 #define MICROPY_EMIT_ARM (0)
 
 // Compiler configuration
@@ -45,7 +45,7 @@
 // Python internal features
 #define MICROPY_ENABLE_EXTERNAL_IMPORT (1)
 #define MICROPY_READER_POSIX (0)
-#define MICROPY_READER_VFS (0)
+#define MICROPY_READER_VFS (1)
 #define MICROPY_VM_HOOK_INIT
 #define MICROPY_VM_HOOK_LOOP
 #define MICROPY_VM_HOOK_RETURN
@@ -75,16 +75,16 @@
 #define MICROPY_STREAMS_NON_BLOCK (0)
 #define MICROPY_STREAMS_POSIX_API (0)
 #define MICROPY_MODULE_BUILTIN_INIT (1)
-#define MICROPY_MODULE_WEAK_LINKS (0)
+#define MICROPY_MODULE_WEAK_LINKS (1)
 #define MICROPY_MODULE_FROZEN_STR (0)
-#define MICROPY_MODULE_FROZEN_MPY (0)
+#define MICROPY_MODULE_FROZEN_MPY (1)
 #define MICROPY_CAN_OVERRIDE_BUILTINS (1)
 #define MICROPY_BUILTIN_METHOD_CHECK_SELF_ARG (1)
 #define MICROPY_USE_INTERNAL_ERRNO (0)
 #define MICROPY_USE_INTERNAL_PRINTF (1)
 #define MICROPY_ENABLE_SCHEDULER (1)
 #define MICROPY_SCHEDULER_DEPTH (4)
-#define MICROPY_VFS (0)
+#define MICROPY_VFS (1)
 
 // Fine control over Python builtins, classes, modules, etc
 #define MICROPY_MULTIPLE_INHERITANCE (1)
@@ -175,7 +175,7 @@
 #define MICROPY_PY_URANDOM (1)
 #define MICROPY_PY_URANDOM_EXTRA_FUNCS (1)
 #define MICROPY_PY_MACHINE (1)
-#define MICROPY_PY_MACHINE_PULSE (1)
+#define MICROPY_PY_MACHINE_PULSE (0)
 #define MICROPY_PY_MACHINE_I2C (0)
 #define MICROPY_PY_MACHINE_SPI (0)
 #define MICROPY_PY_USSL (0)
@@ -205,9 +205,14 @@ typedef long mp_off_t;
 #define MICROPY_HW_BOARD_NAME "umport"
 #define MICROPY_HW_MCU_NAME "Cortex-M4"
 
+#define mp_builtin_open mp_vfs_open
+#define mp_builtin_open_obj mp_vfs_open_obj
+
 #define MP_STATE_PORT MP_STATE_VM
 #define MP_SSIZE_MAX (0x7fffffff)
 #define MP_NEED_LOG2 (1)
+
+#define MICROPY_QSTR_EXTRA_POOL mp_qstr_frozen_const_pool
 
 // Hooks for a port to add builtins
 #define MICROPY_PORT_BUILTINS \
@@ -218,12 +223,43 @@ typedef long mp_off_t;
 #define MICROPY_PORT_ROOT_POINTERS \
     const char *readline_hist[8];
 
-extern const struct _mp_obj_module_t mp_module_utime;
 extern const struct _mp_obj_module_t mp_module_machine;
+extern const struct _mp_obj_module_t mp_module_uos;
+extern const struct _mp_obj_module_t mp_module_utime;
+extern const struct _mp_obj_module_t mp_module_usystem;
 
 #define MICROPY_PORT_BUILTIN_MODULES \
+    { MP_ROM_QSTR(MP_QSTR_machine), MP_ROM_PTR(&mp_module_machine) }, \
+    { MP_ROM_QSTR(MP_QSTR_usystem), MP_ROM_PTR(&mp_module_usystem) }, \
+    { MP_ROM_QSTR(MP_QSTR_ubinascii), MP_ROM_PTR(&mp_module_ubinascii) }, \
+    { MP_ROM_QSTR(MP_QSTR_ucollections), MP_ROM_PTR(&mp_module_collections) }, \
+    { MP_ROM_QSTR(MP_QSTR_uerrno), MP_ROM_PTR(&mp_module_uerrno) }, \
+    { MP_ROM_QSTR(MP_QSTR_uhashlib), MP_ROM_PTR(&mp_module_uhashlib) }, \
+    { MP_ROM_QSTR(MP_QSTR_uheapq), MP_ROM_PTR(&mp_module_uheapq) }, \
+    { MP_ROM_QSTR(MP_QSTR_uio), MP_ROM_PTR(&mp_module_io) }, \
+    { MP_ROM_QSTR(MP_QSTR_ujson), MP_ROM_PTR(&mp_module_ujson) }, \
+    { MP_ROM_QSTR(MP_QSTR_uos), MP_ROM_PTR(&mp_module_uos) }, \
+    { MP_ROM_QSTR(MP_QSTR_urandom), MP_ROM_PTR(&mp_module_urandom) }, \
+    { MP_ROM_QSTR(MP_QSTR_ure), MP_ROM_PTR(&mp_module_ure) }, \
+    { MP_ROM_QSTR(MP_QSTR_ustruct), MP_ROM_PTR(&mp_module_ustruct) }, \
     { MP_ROM_QSTR(MP_QSTR_utime), MP_ROM_PTR(&mp_module_utime) }, \
-    { MP_ROM_QSTR(MP_QSTR_machine), MP_ROM_PTR(&mp_module_machine) },
+    { MP_ROM_QSTR(MP_QSTR_uzlib), MP_ROM_PTR(&mp_module_uzlib) }, \
 
 #define MICROPY_PORT_BUILTIN_MODULE_WEAK_LINKS \
-    { MP_OBJ_NEW_QSTR(MP_QSTR_time), (mp_obj_t)&mp_module_utime },
+    { MP_ROM_QSTR(MP_QSTR_system), MP_ROM_PTR(&mp_module_usystem) }, \
+    { MP_ROM_QSTR(MP_QSTR_binascii), MP_ROM_PTR(&mp_module_ubinascii) }, \
+    { MP_ROM_QSTR(MP_QSTR_collections), MP_ROM_PTR(&mp_module_collections) }, \
+    { MP_ROM_QSTR(MP_QSTR_errno), MP_ROM_PTR(&mp_module_uerrno) }, \
+    { MP_ROM_QSTR(MP_QSTR_hashlib), MP_ROM_PTR(&mp_module_uhashlib) }, \
+    { MP_ROM_QSTR(MP_QSTR_heapq), MP_ROM_PTR(&mp_module_uheapq) }, \
+    { MP_ROM_QSTR(MP_QSTR_io), MP_ROM_PTR(&mp_module_io) }, \
+    { MP_ROM_QSTR(MP_QSTR_json), MP_ROM_PTR(&mp_module_ujson) }, \
+    { MP_ROM_QSTR(MP_QSTR_os), MP_ROM_PTR(&mp_module_uos) }, \
+    { MP_ROM_QSTR(MP_QSTR_random), MP_ROM_PTR(&mp_module_urandom) }, \
+    { MP_ROM_QSTR(MP_QSTR_re), MP_ROM_PTR(&mp_module_ure) }, \
+    { MP_ROM_QSTR(MP_QSTR_struct), MP_ROM_PTR(&mp_module_ustruct) }, \
+    { MP_ROM_QSTR(MP_QSTR_time), MP_ROM_PTR(&mp_module_utime) }, \
+    { MP_ROM_QSTR(MP_QSTR_zlib), MP_ROM_PTR(&mp_module_uzlib) }, \
+
+#if 0
+#endif

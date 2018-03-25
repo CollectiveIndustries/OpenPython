@@ -1,12 +1,12 @@
-# Select the configuration to build with, defaulting to "minimal"
-
-BUILD = build
-FIRMWARE = $(BUILD)/firmware
-
 include ../micropython/py/mkenv.mk
 
 # qstr definitions (must come before including py.mk)
 QSTR_DEFS = qstrdefsport.h
+
+FROZEN_MPY_DIR = modules
+
+BUILD = build
+FIRMWARE = $(BUILD)/firmware
 
 # include py core make definitions
 include $(TOP)/py/py.mk
@@ -35,12 +35,20 @@ LIBS = $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
 CFLAGS += -fdata-sections -ffunction-sections
 LDFLAGS += --gc-sections
 
+
 SRC_C = \
 	main.c \
 	help.c \
 	mphalport.c \
-	modutime.c \
 	modmachine.c \
+	moduos.c \
+	modutime.c \
+	modusystem.c \
+	svcfunc.c \
+
+
+SRC_S = \
+	gchelper.s \
 
 SRC_LIB = $(addprefix lib/,\
 	utils/stdout_helpers.c \
@@ -128,8 +136,10 @@ SRC_QSTR += $(SRC_C)
 OBJ =
 OBJ += $(PY_O)
 OBJ += $(addprefix $(BUILD)/, $(SRC_C:.c=.o))
+OBJ += $(addprefix $(BUILD)/, $(SRC_S:.s=.o))
 OBJ += $(addprefix $(BUILD)/, $(SRC_LIB:.c=.o))
 OBJ += $(addprefix $(BUILD)/, $(SRC_LIBM:.c=.o))
+
 
 all: $(FIRMWARE).bin
 
