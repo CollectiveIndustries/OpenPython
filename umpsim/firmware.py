@@ -5,7 +5,7 @@ from umpsim.util import MapLookupTable
 
 
 class Firmware:
-    def __init__(self, path: Path, map_path: Path=None):
+    def __init__(self, path: Path, map_path: Path = None):
         self.path = Path(path)
         self.map_path = Path(map_path)
         self.buffer: bytes = None
@@ -52,10 +52,3 @@ class Firmware:
                     continue
 
         self.mapping = MapLookupTable(mapping)
-
-build_path = (Path(__file__).parent / "../umport/build")
-
-default_firmware = Firmware(
-    build_path / "firmware.bin",
-    build_path / "firmware.elf.map"
-)
