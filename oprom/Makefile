@@ -3,6 +3,7 @@ include ../micropython/py/mkenv.mk
 # qstr definitions (must come before including py.mk)
 QSTR_DEFS = qstrdefsport.h
 
+FROZEN_DIR = scripts
 FROZEN_MPY_DIR = modules
 
 BUILD = build
@@ -17,8 +18,11 @@ INC += -I.
 INC += -I$(TOP)
 INC += -I$(BUILD)
 
-CFLAGS_CORTEX_M4 = -mthumb -mtune=cortex-m4 -mcpu=cortex-m4 -mfloat-abi=soft -fsingle-precision-constant -Wdouble-promotion
-CFLAGS = $(INC) -Wall -Werror -std=c99 -nostdlib $(CFLAGS_CORTEX_M4) $(COPT)
+
+CFLAGS_CORTEX_M = -mthumb -fsingle-precision-constant -Wdouble-promotion
+CFLAGS_MCU_m0 = $(CFLAGS_CORTEX_M) -mtune=cortex-m0 -mcpu=cortex-m0 -mfloat-abi=soft
+
+CFLAGS = $(INC) -Wall -Werror -std=c99 -nostdlib $(CFLAGS_MCU_m0) $(COPT)
 CFLAGS += -DMP_CONFIGFILE="<mpconfigport.h>"
 
 #Debugging/Optimization
@@ -45,10 +49,10 @@ SRC_C = \
 	modutime.c \
 	modusystem.c \
 	svcfunc.c \
-
+	gccollect.c \
 
 SRC_S = \
-	gchelper.s \
+	gchelper_m0.s \
 
 SRC_LIB = $(addprefix lib/,\
 	utils/stdout_helpers.c \
