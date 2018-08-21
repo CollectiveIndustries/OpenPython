@@ -12,7 +12,6 @@ oprom_path = (Path(__file__).parent / "../oprom")
 build_path = oprom_path / "build"
 
 
-
 def main():
     check_call(
         ["wsl", "make"],
@@ -44,6 +43,8 @@ def main():
     Thread(target=reader).start()
 
     faulthandler.enable()
+    cpu.run()
+
     while cpu.step():
         if False:
             # slow context save/load (memory, register, etc.)
