@@ -1,22 +1,13 @@
 package kr.pe.ecmaxp.openpie.console;
 
-import junicorn.MemoryAccessHook;
-import junicorn.Unicorn;
-import junicorn.UnicornException;
-import kr.pe.ecmaxp.openpie.PeripheralAddress;
+import kr.pe.ecmaxp.thumbsj.CPU;
+import kr.pe.ecmaxp.thumbsj.Memory;
+import kr.pe.ecmaxp.thumbsj.MemoryFlag;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.file.Files;
 
-import static junicorn.UnicornNative.uc_version;
-import static junicorn.ArmConst.UC_ARM_REG_PC;
-import static junicorn.UnicornConst.UC_PROT_EXEC;
-import static junicorn.UnicornConst.UC_PROT_READ;
-import static junicorn.UnicornConst.UC_PROT_WRITE;
-import static junicorn.UnicornConst.*;
+import static kr.pe.ecmaxp.thumbsj.helper.RegisterIndex.PC;
 
 public class OpenPieMain
 {
@@ -24,42 +15,42 @@ public class OpenPieMain
 
     public static void main(String[] args) throws Exception
     {
-        System.loadLibrary("unicorn");
-        Unicorn uc = new Unicorn(UC_ARCH_ARM, UC_MODE_THUMB);
+        CPU cpu = new CPU();
 
         File file = new File("C:\\Users\\EcmaXp\\Dropbox\\Projects\\openpie\\oprom\\build\\firmware.bin");
         byte[] firmware = Files.readAllBytes(file.toPath());
-        uc.mem_map(0x08000000, 0x100000, UC_PROT_READ | UC_PROT_EXEC); // flash
-        uc.mem_map(0x20000000, 0x80000, UC_PROT_READ | UC_PROT_WRITE); // sram
-        uc.mem_map(0x3FFF0000, 0x10000, UC_PROT_READ | UC_PROT_WRITE); // stack
-        uc.mem_map(0x40000000, 0x10000, UC_PROT_READ | UC_PROT_WRITE); // peripheral
-        uc.mem_map(0xE0100000, 0x10000, UC_PROT_READ | UC_PROT_WRITE); // syscall
+        final int KB = 1024;
+        Memory memory = cpu.memory;
+        memory.map(0x08000000, 256 * KB, MemoryFlag.RX); // flash
+        memory.map(0x20000000, 64 * KB, MemoryFlag.RW); // sram
+        memory.map(0x40000000, 4 * KB, (addr, read, size, value) ->
+        {
+            if (!read)
+            {
+                if (addr == 0x40000000)
+                {
+                    System.out.append((char) value);
+                }
+            }
 
-        long flash = 0x08000000;
-        uc.mem_write(flash, firmware);
-        uc.reg_write(UC_ARM_REG_PC, 0x8019614);
+            return 0;
+        }); // peripheral
+        memory.map(0x60000000, 192 * KB, MemoryFlag.RW); // ram
+        memory.map(0xE0000000, 16 * KB, MemoryFlag.RW); // syscall
+
+        int flash = 0x08000000;
+        cpu.memory.writeBuffer(flash, firmware);
+        cpu.regs.set(PC, cpu.memory.readInt(0x08000000 + 4));
 
         byte[] line = "print(1, 2, 3)\r\n".getBytes();
-
-        uc_version();
 
         //noinspection InfiniteLoopStatement
         do
         {
-            long addr = uc.reg_read(UC_ARM_REG_PC);
-            uc.emu_start(addr | 1, flash + 0x100000, 0, 10000);
+            cpu.run(10000);
         }
         while (true);
 
         // uc.close();
     }
-
-    public MemoryAccessHook WriteAccessHook = (uc2, type, address, size, value, user) ->
-    {
-        if (address == 0x40000000)
-        {
-            System.out.append((char) value);
-        }
-        // System.out.printf("write: %x, %d, %d\n", address, size, value);
-    };
 }

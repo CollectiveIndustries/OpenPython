@@ -6,18 +6,17 @@
 MEMORY
 {
     FLASH (rx)      : ORIGIN = 0x08000000, LENGTH = 256K
-    SRAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 32K
-    RAM (xrw)       : ORIGIN = 0x60000000, LENGTH = 160K
+    SRAM (rw)       : ORIGIN = 0x20000000, LENGTH = 64K
+    RAM (rw)        : ORIGIN = 0x60000000, LENGTH = 192K
 }
 
 /* produce a link error if there is not this amount of SRAM/RAM for these sections */
-_minimum_stack_size = 8K;
-_minimum_heap_size = 160K;
+_minimum_stack_size = 16K;
+_minimum_heap_size = 128K;
 
 /* Define tho top end of the stack.  The stack is full descending so begins just
    above last byte of SRAM.  Note that EABI requires the stack to be 8-byte
    aligned for a call. */
-_sstack = _ebss;
 _estack = ORIGIN(SRAM) + LENGTH(SRAM);
 
 /* RAM extents for the garbage collector */
@@ -26,10 +25,9 @@ _sram_end = ORIGIN(SRAM) + LENGTH(SRAM);
 _ram_start = ORIGIN(RAM); /* heap starts just after statically allocated memory */
 _ram_end = ORIGIN(RAM) + LENGTH(RAM);
 
-
 /* Memory layout for basic configuration:
 
-    FLASH       .isr_vector
+    FLASH       .startup
     FLASH       .text
     FLASH       .data
 
@@ -46,11 +44,11 @@ ENTRY(Reset_Handler)
 SECTIONS
 {
     /* The startup code goes first into FLASH */
-    .isr_vector :
+    .startup :
     {
         . = ALIGN(4);
         _svec = .;
-        KEEP(*(.isr_vector)) /* Startup code */
+        KEEP(*(.startup)) /* Startup code */
 
         . = ALIGN(4);
     } >FLASH
