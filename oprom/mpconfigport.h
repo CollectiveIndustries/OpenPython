@@ -81,7 +81,7 @@
 #define MICROPY_MODULE_FROZEN_MPY (1)
 #define MICROPY_CAN_OVERRIDE_BUILTINS (1)
 #define MICROPY_BUILTIN_METHOD_CHECK_SELF_ARG (1)
-#define MICROPY_USE_INTERNAL_ERRNO (0)
+#define MICROPY_USE_INTERNAL_ERRNO (1)
 #define MICROPY_USE_INTERNAL_PRINTF (1)
 #define MICROPY_ENABLE_SCHEDULER (1)
 #define MICROPY_SCHEDULER_DEPTH (4)
@@ -141,7 +141,7 @@
 #define MICROPY_PY_GC_COLLECT_RETVAL (1)
 #define MICROPY_PY_IO (1)
 #define MICROPY_PY_IO_RESOURCE_STREAM (1)
-#define MICROPY_PY_IO_FILEIO (0)
+#define MICROPY_PY_IO_FILEIO (1)
 #define MICROPY_PY_IO_BYTESIO (1)
 // MICROPY_PY_IO_BUFFEREDWRITER make error with `unused-variable`
 #define MICROPY_PY_IO_BUFFEREDWRITER (0)
@@ -197,6 +197,7 @@
 // Machine settings
 #define MICROPY_HW_BOARD_NAME "openpie"
 #define MICROPY_HW_MCU_NAME "Cortex-M0"
+#define MICROPY_OPENPIE_VFS (1)
 
 #define MP_SSIZE_MAX (0x7fffffff)
 #define MP_NEED_LOG2 (1)
@@ -221,9 +222,12 @@ typedef long mp_off_t;
 #define MICROPY_PORT_ROOT_POINTERS \
     const char *readline_hist[8];
 
+#define mp_type_fileio mp_type_vfs_openpie_fileio
+#define mp_type_textio mp_type_vfs_openpie_textio
+
+#define mp_import_stat mp_vfs_import_stat
 #define mp_builtin_open mp_vfs_open
 #define mp_builtin_open_obj mp_vfs_open_obj
-
 
 // Modules
 extern const struct _mp_obj_module_t mp_module_machine;
@@ -234,19 +238,8 @@ extern const struct _mp_obj_module_t mp_module_usystem;
 #define MICROPY_PORT_BUILTIN_MODULES \
     { MP_ROM_QSTR(MP_QSTR_machine), MP_ROM_PTR(&mp_module_machine) }, \
     { MP_ROM_QSTR(MP_QSTR_usystem), MP_ROM_PTR(&mp_module_usystem) }, \
-    { MP_ROM_QSTR(MP_QSTR_ubinascii), MP_ROM_PTR(&mp_module_ubinascii) }, \
-    { MP_ROM_QSTR(MP_QSTR_ucollections), MP_ROM_PTR(&mp_module_collections) }, \
-    { MP_ROM_QSTR(MP_QSTR_uerrno), MP_ROM_PTR(&mp_module_uerrno) }, \
-    { MP_ROM_QSTR(MP_QSTR_uhashlib), MP_ROM_PTR(&mp_module_uhashlib) }, \
-    { MP_ROM_QSTR(MP_QSTR_uheapq), MP_ROM_PTR(&mp_module_uheapq) }, \
-    { MP_ROM_QSTR(MP_QSTR_uio), MP_ROM_PTR(&mp_module_io) }, \
-    { MP_ROM_QSTR(MP_QSTR_ujson), MP_ROM_PTR(&mp_module_ujson) }, \
     { MP_ROM_QSTR(MP_QSTR_uos), MP_ROM_PTR(&mp_module_uos) }, \
-    { MP_ROM_QSTR(MP_QSTR_urandom), MP_ROM_PTR(&mp_module_urandom) }, \
-    { MP_ROM_QSTR(MP_QSTR_ure), MP_ROM_PTR(&mp_module_ure) }, \
-    { MP_ROM_QSTR(MP_QSTR_ustruct), MP_ROM_PTR(&mp_module_ustruct) }, \
     { MP_ROM_QSTR(MP_QSTR_utime), MP_ROM_PTR(&mp_module_utime) }, \
-    { MP_ROM_QSTR(MP_QSTR_uzlib), MP_ROM_PTR(&mp_module_uzlib) }, \
 
 #define MICROPY_PORT_BUILTIN_MODULE_WEAK_LINKS \
     { MP_ROM_QSTR(MP_QSTR_system), MP_ROM_PTR(&mp_module_usystem) }, \
