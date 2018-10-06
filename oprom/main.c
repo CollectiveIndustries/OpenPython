@@ -12,7 +12,16 @@
 #include "gccollect.h"
 #include "machine.h"
 #include "syscall.h"
+#include "openpie_mcu.h"
+#include <stdarg.h>
 
+#define _debug(s) __syscall2(SYS_DEBUG, (int)s, (int)strlen(s));
+
+void debug_printer(void *self, const char *buf, size_t len) {
+    __syscall2(SYS_DEBUG, (int) buf, (int) len);
+}
+
+const struct _mp_print_t debug_print = {NULL, debug_printer};
 
 void do_str(const char *src, mp_parse_input_kind_t input_kind) {
     nlr_buf_t nlr;
@@ -33,7 +42,7 @@ int main(int argc, char **argv) {
     int code;
 
     if (nlr_push(&nlr) == 0) {
-        mp_stack_set_top((uint8_t *) &_estack);
+        mp_stack_set_top((uint8_t * ) & _estack);
         mp_stack_set_limit(&_estack - &_ebss - 512);
 
 #if MICROPY_ENABLE_PYSTACK
@@ -41,7 +50,12 @@ int main(int argc, char **argv) {
         mp_pystack_init(&pystack, &pystack[MP_ARRAY_SIZE(pystack)]);
 #endif
 
-        gc_init(&_ram_start, &_ram_end);
+        size_t ram_size = (size_t)OPENPIE_CONTROLLER->RAM_SIZE;
+        if (!ram_size)
+            gc_init(&_ram_start, &_ram_end);
+        else
+            gc_init(&_ram_start, (&_ram_start) + ram_size);
+
         mp_init();
         mp_obj_list_init(mp_sys_path, 0);
         mp_obj_list_append(mp_sys_path, MP_OBJ_NEW_QSTR(MP_QSTR_));
@@ -71,10 +85,16 @@ int main(int argc, char **argv) {
                 }
             }
         }
+
+        nlr_pop();
     } else {
-        // uncaught exception
-        mp_obj_print_exception(&mp_plat_print, (mp_obj_t) nlr.ret_val);
-        mp_deinit();
+        if (nlr_push(&nlr) == 0) {
+            mp_obj_print_exception(&debug_print, (mp_obj_t) nlr.ret_val);
+            mp_deinit();
+            nlr_pop();
+        } else {
+            __fatal_error("unexpected error");
+        }
     }
 
     return 0;

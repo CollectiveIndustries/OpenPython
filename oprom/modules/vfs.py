@@ -1,7 +1,7 @@
-from component import Component
-from system import components
 from uio import FileIO
-import uerrno
+
+from component import Component
+from machine import components
 
 
 class FileSystem:
@@ -11,6 +11,7 @@ class FileSystem:
         self.readonly = self.fs.isReadOnly()
         self.cwd = "/"
 
+    # noinspection PyUnusedLocal
     def mount(self, readonly, mkfs):
         self.readonly = self.fs.isReadOnly() or readonly
 
@@ -52,7 +53,7 @@ class FileSystem:
         if self.readonly:
             raise OSError(1)
 
-        print(self.address, 'remove', path)
+        self.fs.remove(path)
 
     def rename(self, old_path, new_path):
         if self.readonly:
@@ -98,6 +99,7 @@ class FileSystem:
             mtime,  # ctime
         )
 
+    # noinspection PyUnusedLocal
     def statvfs(self, path):
         return (
             0,  # f_bsize

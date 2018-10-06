@@ -34,7 +34,6 @@ gradle-app.setting
 .metadata
 .classpath
 .project
-bin
 
 # intellij
 /out

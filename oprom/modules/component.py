@@ -1,9 +1,9 @@
-from system import syscall, methods, annotations
-import system
+from machine import invoke, methods, annotations
+import machine
 
 
-def components():
-    return {value: Component(key, value) for key, value in system.components().items()}
+def devices():
+    return {value: Component(key, value) for key, value in machine.components().items()}
 
 
 class ComponentMethod:
@@ -12,7 +12,7 @@ class ComponentMethod:
         self.name = name
 
     def __call__(self, *args):
-        return syscall(self.component.address, self.name, *args)
+        return invoke(self.component.address, self.name, *args)
 
     @property
     def doc(self):
@@ -25,7 +25,7 @@ class ComponentMethod:
         else:
             doc = ""
 
-        return "ComponentMethod<{0}, {1}>{2}".format(self.component, self.name, doc)
+        return "ComponentMethod<{0!r}, {1!r}>{2}".format(self.component, self.name, doc)
 
 
 class Component:

@@ -5,7 +5,7 @@
 
 // Memory allocation policy
 #define MICROPY_GC_ALLOC_THRESHOLD (1)
-#define MICROPY_ALLOC_PATH_MAX (512)
+#define MICROPY_ALLOC_PATH_MAX (255)
 #define MICROPY_MODULE_DICT_SIZE (1)
 #define MICROPY_MALLOC_USES_ALLOCATED_SIZE (1)
 #define MICROPY_QSTR_BYTES_IN_LEN (1)
@@ -24,7 +24,7 @@
 
 // Compiler configuration
 #define MICROPY_ENABLE_COMPILER (1)
-#define MICROPY_DYNAMIC_COMPILER (1)
+#define MICROPY_DYNAMIC_COMPILER (0)
 #define MICROPY_COMP_CONST_FOLDING (1)
 #define MICROPY_COMP_MODULE_CONST (1)
 #define MICROPY_COMP_CONST (1)
@@ -39,8 +39,7 @@
 
 // Optimisations
 #define MICROPY_OPT_COMPUTED_GOTO (1)
-// incompatible MICROPY_OPT_CACHE_MAP_LOOKUP_IN_BYTECODE
-#define MICROPY_OPT_CACHE_MAP_LOOKUP_IN_BYTECODE (0)
+#define MICROPY_OPT_CACHE_MAP_LOOKUP_IN_BYTECODE (1)
 #define MICROPY_OPT_MPZ_BITWISE (1)
 
 // Python internal features
@@ -168,9 +167,16 @@
 #define MICROPY_PY_UZLIB (1)
 #define MICROPY_PY_UJSON (1)
 #define MICROPY_PY_URE (1)
+#define MICROPY_PY_URE_MATCH_GROUPS (1)
+#define MICROPY_PY_URE_MATCH_SPAN_START_END (1)
+#define MICROPY_PY_URE_SUB (1)
 #define MICROPY_PY_UHEAPQ (1)
 #define MICROPY_PY_UTIMEQ (1)
 #define MICROPY_PY_UHASHLIB (1)
+#define MICROPY_PY_UHASHLIB_MD5 (0)
+#define MICROPY_PY_UHASHLIB_SHA1 (0)
+#define MICROPY_PY_UHASHLIB_SHA256 (1)
+#define MICROPY_PY_UCRYPTOLIB (0)
 #define MICROPY_PY_UBINASCII (1)
 #define MICROPY_PY_UBINASCII_CRC32 (1)
 #define MICROPY_PY_URANDOM (1)
@@ -186,6 +192,8 @@
 #define MICROPY_PY_BTREE (0)
 
 // Miscellaneous settings
+extern const struct _mp_print_t debug_print;
+#define MICROPY_DEBUG_PRINTER (&debug_print)
 #define MICROPY_OBJ_BASE_ALIGNMENT
 #define MICROPY_BEGIN_ATOMIC_SECTION() (0)
 #define MICROPY_END_ATOMIC_SECTION(state) (void)(state)
@@ -211,12 +219,15 @@ typedef long mp_off_t;
 
 #include <alloca.h>
 
+// Exceptions
+extern const struct _mp_obj_type_t mp_type_SystemError;
 
 // Builtins
 #define MP_STATE_PORT MP_STATE_VM
 
 #define MICROPY_PORT_BUILTINS \
-    { MP_OBJ_NEW_QSTR(MP_QSTR_open), (mp_obj_t)&mp_builtin_open_obj },
+    { MP_OBJ_NEW_QSTR(MP_QSTR_open), (mp_obj_t)&mp_builtin_open_obj }, \
+    { MP_ROM_QSTR(MP_QSTR_SystemError), MP_ROM_PTR(&mp_type_SystemError) }, \
 
 #define MICROPY_PORT_CONSTANTS
 
@@ -235,15 +246,15 @@ extern const struct _mp_obj_module_t mp_module_machine;
 extern const struct _mp_obj_module_t mp_module_uos;
 extern const struct _mp_obj_module_t mp_module_utime;
 extern const struct _mp_obj_module_t mp_module_usystem;
+extern const struct _mp_obj_module_t mp_module_umsgpack;
 
 #define MICROPY_PORT_BUILTIN_MODULES \
     { MP_ROM_QSTR(MP_QSTR_machine), MP_ROM_PTR(&mp_module_machine) }, \
-    { MP_ROM_QSTR(MP_QSTR_usystem), MP_ROM_PTR(&mp_module_usystem) }, \
     { MP_ROM_QSTR(MP_QSTR_uos), MP_ROM_PTR(&mp_module_uos) }, \
     { MP_ROM_QSTR(MP_QSTR_utime), MP_ROM_PTR(&mp_module_utime) }, \
+    { MP_ROM_QSTR(MP_QSTR_umsgpack), MP_ROM_PTR(&mp_module_umsgpack) }, \
 
 #define MICROPY_PORT_BUILTIN_MODULE_WEAK_LINKS \
-    { MP_ROM_QSTR(MP_QSTR_system), MP_ROM_PTR(&mp_module_usystem) }, \
     { MP_ROM_QSTR(MP_QSTR_binascii), MP_ROM_PTR(&mp_module_ubinascii) }, \
     { MP_ROM_QSTR(MP_QSTR_collections), MP_ROM_PTR(&mp_module_collections) }, \
     { MP_ROM_QSTR(MP_QSTR_errno), MP_ROM_PTR(&mp_module_uerrno) }, \

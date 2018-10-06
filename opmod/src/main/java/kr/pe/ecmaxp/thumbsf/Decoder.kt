@@ -1,9 +1,9 @@
 package kr.pe.ecmaxp.thumbsf
 
+import kr.pe.ecmaxp.thumbsf.consts.*
 import kr.pe.ecmaxp.thumbsf.exc.UnexceptedLogicError
 import kr.pe.ecmaxp.thumbsf.exc.UnknownInstructionException
 import kr.pe.ecmaxp.thumbsf.exc.UnsupportedInstructionException
-import kr.pe.ecmaxp.thumbsf.helper.*
 
 
 fun insnx(op: Int, Rd: Int, imm32: Int): Pair<Int, Int> {
@@ -61,13 +61,13 @@ fun insn(op: Int): Pair<Int, Int> {
     return Pair(op, 0)
 }
 
-fun show(code: Int, imm32: Int, executedCount: Int = -1) {
+fun show(code: Int, imm32: Int) {
     val op = code and 0xFF
     val Rd = code shr 8 and 0b1111
     val Rs = code shr 12 and 0b1111
     val Rn = code shr 16 and 0b1111
     val imm16 = code shr 16
-    println("${executedCount}    ${op2str(op)}  Rd=$Rd  Rs=$Rs  Rn=$Rn  imm16=$imm16  imm32=$imm32")
+    println("${op2str(op)}\tRd=$Rd\tRs=$Rs\tRn=$Rn\timm16=$imm16\timm32=$imm32")
 }
 
 fun decode(memory: Memory, pc: Int): Pair<Int, Int> {
@@ -168,39 +168,21 @@ fun decode(memory: Memory, pc: Int): Pair<Int, Int> {
                         else -> throw UnexceptedLogicError()
                     }
 
-                    when (op) {
-                        ADD -> {
-                            op = when (Rd) {
-                                PC, SP, LR -> ADDX
-                                else -> op
+                    val isSpecialRegs =
+                            when (Rd) {
+                                PC, SP, LR -> true
+                                else -> false
+                            } || when (Rs) {
+                                PC, SP, LR -> true
+                                else -> false
                             }
 
-                            op = when (Rs) {
-                                PC, SP, LR -> ADDX
-                                else -> op
-                            }
-                        }
-                        CMP -> {
-                            op = when (Rd) {
-                                PC, SP, LR -> CMPX
-                                else -> op
-                            }
-
-                            op = when (Rs) {
-                                PC, SP, LR -> CMPX
-                                else -> op
-                            }
-                        }
-                        MOV -> {
-                            op = when (Rd) {
-                                PC, SP, LR -> MOVX
-                                else -> op
-                            }
-
-                            op = when (Rs) {
-                                PC, SP, LR -> MOVX
-                                else -> op
-                            }
+                    if (isSpecialRegs) {
+                        op = when (op) {
+                            ADD -> ADDX
+                            CMP -> CMPX
+                            MOV -> MOVX
+                            else -> op
                         }
                     }
 
