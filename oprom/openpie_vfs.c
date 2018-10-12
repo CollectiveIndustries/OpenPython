@@ -41,26 +41,6 @@
 
 #define _debug(s) __syscall2(SYS_DEBUG, (int)s, (int)strlen(s));
 
-int SVC_CALL_VFS(int r0, int r1, int r2, int r3) {
-    return __syscall4(SYS_VFS, r0, r1, r2, r3);
-}
-
-int SVC_CALL_VFS_OUT(int r0, int r1, int r2, int r3, int *v1) {
-    int errno = __syscall5(SYS_VFS, r0, r1, r2, r3, (int) v1);
-    return errno;
-}
-
-
-typedef enum vfs_command {
-    VFS_OPEN = 1,
-    VFS_VALID = 2,
-    VFS_REPR = 3,
-    VFS_CLOSE = 4,
-    VFS_READ = 5,
-    VFS_WRITE = 6,
-    VFS_SEEK = 7,
-    VFS_FLUSH = 8,
-} vfs_command;
 
 typedef struct _mp_obj_vfs_openpie_file_t {
     mp_obj_base_t base;
@@ -90,7 +70,7 @@ mp_obj_t mp_vfs_openpie_file_open(const mp_obj_type_t *type, mp_obj_t address_in
     o->base.type = type;
     o->fd = -1;
 
-    int errno = SVC_CALL_VFS_OUT(VFS_OPEN, (int) address, (int) path, (int) mode, &(o->fd));
+    int errno = __syscall4(SYS_VFS_OPEN, (int) address, (int) path, (int) mode, (int) &(o->fd));
     if (errno != 0) {
         mp_raise_OSError(errno);
     }
@@ -131,7 +111,7 @@ STATIC mp_uint_t vfs_openpie_file_read(mp_obj_t o_in, void *buf, mp_uint_t size,
     check_fd_is_open(o);
 
     int count = 0;
-    int errno = SVC_CALL_VFS_OUT(VFS_READ, o->fd, (int) size, (int) buf, &count);
+    int errno = __syscall4(SYS_VFS_READ, o->fd, (int) size, (int) buf, (int) &count);
     if (errno != 0) {
         *errcode = errno;
         return MP_STREAM_ERROR;
@@ -149,7 +129,7 @@ STATIC mp_uint_t vfs_openpie_file_write(mp_obj_t o_in, const void *buf, mp_uint_
     }
 #endif
     int written = 0;
-    int errno = SVC_CALL_VFS_OUT(VFS_WRITE, o->fd, (int) buf, (int) size, &written);
+    int errno = __syscall4(SYS_VFS_WRITE, o->fd, (int) buf, (int) size, (int) &written);
     if (errno != 0) {
         *errcode = errno;
         return MP_STREAM_ERROR;
@@ -163,7 +143,7 @@ STATIC mp_uint_t vfs_openpie_file_ioctl(mp_obj_t o_in, mp_uint_t request, uintpt
     int errno;
     switch (request) {
         case MP_STREAM_FLUSH:
-            errno = SVC_CALL_VFS(VFS_FLUSH, o->fd, 0, 0);
+            errno = __syscall3(SYS_VFS_FLUSH, o->fd, 0, 0);
             if (errno != 0) {
                 *errcode = errno;
                 return MP_STREAM_ERROR;
@@ -172,7 +152,7 @@ STATIC mp_uint_t vfs_openpie_file_ioctl(mp_obj_t o_in, mp_uint_t request, uintpt
         case MP_STREAM_SEEK: {
             struct mp_stream_seek_t *s = (struct mp_stream_seek_t *) arg;
             int offset = 0;
-            errno = SVC_CALL_VFS_OUT(VFS_SEEK, o->fd, s->offset, s->whence, &offset);
+            errno = __syscall4(SYS_VFS_SEEK, o->fd, s->offset, s->whence, (int) &offset);
             if (errno != 0) {
                 *errcode = errno;
                 return MP_STREAM_ERROR;
@@ -181,7 +161,7 @@ STATIC mp_uint_t vfs_openpie_file_ioctl(mp_obj_t o_in, mp_uint_t request, uintpt
             return 0;
         }
         case MP_STREAM_CLOSE:
-            errno = SVC_CALL_VFS(VFS_CLOSE, o->fd, 0, 0);
+            errno = __syscall3(SYS_VFS_CLOSE, o->fd, 0, 0);
             if (errno != 0) {
                 *errcode = errno;
                 return MP_STREAM_ERROR;

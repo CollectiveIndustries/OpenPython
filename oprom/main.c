@@ -8,11 +8,11 @@
 #include "py/repl.h"
 #include "py/runtime.h"
 #include "py/stackctrl.h"
+#include "py/frozenmod.h"
 #include "lib/utils/pyexec.h"
 #include "gccollect.h"
 #include "machine.h"
 #include "syscall.h"
-#include "openpie_mcu.h"
 #include <stdarg.h>
 
 #define _debug(s) __syscall2(SYS_DEBUG, (int)s, (int)strlen(s));
@@ -37,9 +37,18 @@ void do_str(const char *src, mp_parse_input_kind_t input_kind) {
     }
 }
 
+void do_frozen(const char *name) {
+    void *frozen_data;
+    int frozen_type = mp_find_frozen_module(name, strlen(name), &frozen_data);
+    if (frozen_type != MP_FROZEN_MPY)
+        __fatal_error("frozen_type != MP_FROZEN_MPY");
+
+    mp_obj_t module_fun = mp_make_function_from_raw_code(frozen_data, MP_OBJ_NULL, MP_OBJ_NULL);
+    mp_call_function_0(module_fun);
+}
+
 int main(int argc, char **argv) {
     nlr_buf_t nlr;
-    int code;
 
     if (nlr_push(&nlr) == 0) {
         mp_stack_set_top((uint8_t * ) & _estack);
@@ -50,51 +59,54 @@ int main(int argc, char **argv) {
         mp_pystack_init(&pystack, &pystack[MP_ARRAY_SIZE(pystack)]);
 #endif
 
-        size_t ram_size = (size_t)OPENPIE_CONTROLLER->RAM_SIZE;
-        if (!ram_size)
-            gc_init(&_ram_start, &_ram_end);
-        else
-            gc_init(&_ram_start, (&_ram_start) + ram_size);
+        size_t ram_size = (size_t) __syscall0(SYS_INFO_RAM_SIZE);
+        gc_init(&_ram_start, ((void *)&_ram_start) + ram_size);
 
         mp_init();
         mp_obj_list_init(mp_sys_path, 0);
         mp_obj_list_append(mp_sys_path, MP_OBJ_NEW_QSTR(MP_QSTR_));
         mp_obj_list_init(mp_sys_argv, 0);
 
-        code = pyexec_frozen_module("_boot.py");
-        if (code != 1) {
-            // error or SystemExit
-            return 1;
-        }
 
-        code = pyexec_frozen_module("_bios.py");
-        if (code != 1) {
-            // error or SystemExit
-            return 1;
-        } else {
-            // done, give interpreter for now
-            for (;;) {
-                if (pyexec_mode_kind == PYEXEC_MODE_RAW_REPL) {
-                    if (pyexec_raw_repl() != 0) {
-                        break;
-                    }
-                } else {
-                    if (pyexec_friendly_repl() != 0) {
-                        break;
-                    }
+        do_frozen("bios.py");
+
+        for (;;) {
+            if (pyexec_mode_kind == PYEXEC_MODE_RAW_REPL) {
+                if (pyexec_raw_repl() != 0) {
+                    break;
+                }
+            } else {
+                if (pyexec_friendly_repl() != 0) {
+                    break;
                 }
             }
         }
 
         nlr_pop();
     } else {
-        if (nlr_push(&nlr) == 0) {
-            mp_obj_print_exception(&debug_print, (mp_obj_t) nlr.ret_val);
-            mp_deinit();
+        nlr_buf_t nlr2;
+        if (nlr_push(&nlr2) == 0) {
+            vstr_t vstr;
+            mp_print_t print;
+            vstr_init_print(&vstr, 256, &print);
+
+            mp_obj_print_exception(&print, (mp_obj_t) nlr.ret_val);
+            char *message = vstr_null_terminated_str(&vstr);
+            __fatal_error(message);
             nlr_pop();
         } else {
-            __fatal_error("unexpected error");
+            vstr_t vstr;
+            mp_print_t print;
+            vstr_init_print(&vstr, 256, &print);
+
+            mp_obj_print_helper(&print, (mp_obj_t) nlr.ret_val, PRINT_EXC);
+            // char *message = vstr_null_terminated_str(&vstr);
+            vstr.buf[vstr.len] = '\0';
+            char *message = vstr.buf;
+            __fatal_error(message);
         }
+
+        mp_deinit();
     }
 
     return 0;

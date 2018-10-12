@@ -1,5 +1,6 @@
 package kr.pe.ecmaxp.openpie.arch
 
+import kr.pe.ecmaxp.openpie.arch.consts.KB
 import kr.pe.ecmaxp.thumbsf.exc.InvalidMemoryException
 import li.cil.oc.api.Driver
 import li.cil.oc.api.driver.item.Memory
@@ -10,47 +11,27 @@ import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTTagList
 import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.IOException
-import java.nio.file.Files
-import java.nio.file.attribute.FileTime
 import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
 
-@Suppress("unused")
-@Architecture.Name("micropython (OpenPie)")
-class OpenPieArchitecture(private val machine: Machine) : Architecture {
-    private var initialized: Boolean = false
 
-    private var totalMemory = 0
-    private var vmMemory = 0
-    private var vm: OpenPieVirtualMachine? = null
-    private var lastSynchronizedResult: ExecutionResult? = null
+@Architecture.Name("micropython (OpenPie)")
+class OpenPieArchitecture(val machine: Machine) : Architecture {
+    var totalMemory = 0
+    var vm: OpenPieVirtualMachine? = null
+    var lastSynchronizedResult: ExecutionResult? = null
 
     override fun isInitialized(): Boolean {
         return vm != null
     }
 
-    override fun recomputeMemory(iterable: Iterable<ItemStack>): Boolean {
-        var totalRam = 0.0
-        for (stack in iterable) {
-            val driver = Driver.driverFor(stack)
-            if (driver is Memory) {
-                totalRam += driver.amount(stack) * 1024
-            }
-        }
-
-        totalMemory = totalRam.toInt()
-        return (vm?.memorySize ?: 0) <= totalRam
-    }
-
-    // TODO: report exception handler?
-
     override fun initialize(): Boolean {
         close()
 
         try {
-            vm = OpenPieVirtualMachine(machine, totalMemory)
+            val firmware = OpenPieFirmware("debug") // TODO: OpenPieFirmware mapping
+            recomputeMemory(machine.host().internalComponents())
+            vm = OpenPieVirtualMachine(machine, totalMemory, firmware)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -63,65 +44,54 @@ class OpenPieArchitecture(private val machine: Machine) : Architecture {
         vm = null
     }
 
-    val prev = DebugFirmwareGetLastModifiedTime()
+    override fun recomputeMemory(iterable: Iterable<ItemStack>): Boolean {
+        var totalRam = 0.0
+        for (stack in iterable) {
+            val driver = Driver.driverFor(stack)
+            if (driver is Memory) {
+                totalRam += driver.amount(stack) * KB
+            }
+        }
+
+        totalMemory = totalRam.toInt()
+        return (vm?.memorySize ?: 1) <= totalRam
+    }
+
     private fun step(isSynchronized: Boolean): ExecutionResult {
         val vm = this.vm ?: return ExecutionResult.Error("invalid machine")
         if (vm.memorySize > totalMemory)
             return ExecutionResult.Error("not enough memory")
 
-        val next = DebugFirmwareGetLastModifiedTime()
-        if (prev != next)
-            return ExecutionResult.Shutdown(true)
-
         return try {
             vm.step(isSynchronized)
-        } catch (e: InvalidMemoryException) {
-            ExecutionResult.Error("memory access violation: 0x${String.format("%08X", e.address)}")
         } catch (e: Exception) {
             e.printStackTrace()
-            ExecutionResult.Error(e.toString())
-        } catch (e: Throwable) {
+            ExecutionResult.Error("kernel panic:\n${e}")
+        } catch (e: Error) {
             e.printStackTrace()
-            throw e;
+            ExecutionResult.Error("kernel panic:\n${e}")
+        } catch (e: Throwable) {
+            throw e
         }
     }
 
-    override fun runThreaded(isSynchronizedReturn: Boolean): ExecutionResult {
-        return if (!isSynchronizedReturn) {
+    override fun runThreaded(synchronizedReturn: Boolean): ExecutionResult {
+        return if (!synchronizedReturn) {
             step(false)
         } else {
-            val result = lastSynchronizedResult ?: ExecutionResult.Error("invalid synchronized call")
+            val result = lastSynchronizedResult!!
             lastSynchronizedResult = null
             result
         }
     }
 
     override fun runSynchronized() {
-        lastSynchronizedResult = try {
-            step(true)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            ExecutionResult.Error(e.toString())
-        }
+        lastSynchronizedResult = step(true)
     }
 
-    private fun DebugFirmwareGetLastModifiedTime(): FileTime? {
-        val file = File("C:\\Users\\EcmaXp\\Dropbox\\Projects\\openpie\\oprom\\build\\firmware.bin")
-        try {
-            return Files.getLastModifiedTime(file.toPath())
-        } catch (ignored: IOException) {
-        }
+    override fun onSignal() {}
 
-        return null
-    }
-
-    override fun onSignal() {
-        vm!!.onSignal()
-    }
-
-    override fun onConnect() {
-        println(toString() + ": onConnect()")
-    }
+    override fun onConnect() {}
 
     override fun load(rootTag: NBTTagCompound) {
         if (!machine.isRunning) return
@@ -129,24 +99,25 @@ class OpenPieArchitecture(private val machine: Machine) : Architecture {
         val vm = this.vm!!
         val cpu = vm.cpu
 
+        cpu.regs.store(rootTag.getIntArray("regs"))
+        vm.firmware = OpenPieFirmware(rootTag.getString("firmware"))
+
         val memoryTag = rootTag.getTagList("memory", 10)
         for (regionBaseTag in memoryTag) {
             val regionTag = regionBaseTag as NBTTagCompound
             val address = regionTag.getLong("address").toInt()
-            // val size = regionTag.getInteger("size") // TODO: load memory size please
-            val isHook = regionTag.getBoolean("isHook")
-            // val flag = regionTag.getInteger("size")
+            // val size = regionTag.getInteger("size")
+            // val flag = regionTag.getInteger("flag")
 
-            if (!isHook) {
-                val compressed = regionTag.getByteArray("buffer")
-                val content = GZIPInputStream(compressed.inputStream()).use { it.readBytes() }
+            val compressed = regionTag.getByteArray("buffer")
+            val content = GZIPInputStream(compressed.inputStream()).use { it.readBytes() }
+            try {
                 cpu.memory.writeBuffer(address, content)
-            } else {
-                // TODO: ?
+            } catch (e: InvalidMemoryException) {
+                machine.crash("InvalidMemoryException while load() from world")
+                return
             }
         }
-
-        cpu.regs.store(rootTag.getIntArray("regs"))
     }
 
     override fun save(rootTag: NBTTagCompound) {
@@ -158,27 +129,21 @@ class OpenPieArchitecture(private val machine: Machine) : Architecture {
             val regionTag = NBTTagCompound()
             regionTag.setLong("address", Integer.toUnsignedLong(region.begin))
             regionTag.setInteger("size", region.size)
-            regionTag.setBoolean("isHook", region.isHook)
             regionTag.setInteger("flag", region.flag.ordinal)
 
-            if (!region.isHook) {
-                val content = region.buffer
-                val stream = ByteArrayOutputStream()
-                GZIPOutputStream(stream).use { it.write(content) }
-                val compressed = stream.toByteArray()
-                regionTag.setByteArray("buffer", compressed)
-            }
+            val content = region.buffer
+            val stream = ByteArrayOutputStream()
+            GZIPOutputStream(stream).use { it.write(content) }
+            val compressed = stream.toByteArray()
+            regionTag.setByteArray("buffer", compressed)
 
             memoryTag.appendTag(regionTag)
         }
 
-        // TODO: store firmware (and protocol) version
-        // TODO: store VMState (file mapping, input/output buffer and signals)
-        rootTag.setTag("memory", memoryTag)
+        // TODO: store VMState (file mapping)
+        rootTag.setString("firmware", vm.firmware.name)
+        rootTag.setInteger("protocol", vm.firmware.protocol)
         rootTag.setIntArray("regs", cpu.regs.load())
-    }
-
-    override fun toString(): String {
-        return "OpenPieArchitecture(machine=$machine, initialized=$initialized, vm=$vm, lastSynchronizedResult=$lastSynchronizedResult)"
+        rootTag.setTag("memory", memoryTag)
     }
 }
