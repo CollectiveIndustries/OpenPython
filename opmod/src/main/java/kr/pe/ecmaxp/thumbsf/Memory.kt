@@ -1,5 +1,6 @@
 package kr.pe.ecmaxp.thumbsf
 
+import kr.pe.ecmaxp.thumbsf.MemoryRegion.Companion.EmptyPage
 import kr.pe.ecmaxp.thumbsf.consts.ERROR
 import kr.pe.ecmaxp.thumbsf.consts.NULL
 import kr.pe.ecmaxp.thumbsf.exc.InvalidMemoryException
@@ -8,9 +9,8 @@ import kr.pe.ecmaxp.thumbsf.exc.UnknownInstructionException
 import kr.pe.ecmaxp.thumbsf.exc.UnsupportedInstructionException
 import java.nio.charset.StandardCharsets
 
-val EmptyPage = MemoryRegion(0, 0, MemoryFlag.RW)
 
-class Memory(private val _list: Array<MemoryRegion> = Array(256) { EmptyPage }): Iterable<MemoryRegion> {
+class Memory(private val _list: Array<MemoryRegion> = Array(256) { EmptyPage }) : Iterable<MemoryRegion> {
     private var _execCache: IntArray? = null
 
     override fun iterator(): Iterator<MemoryRegion> {
@@ -33,15 +33,11 @@ class Memory(private val _list: Array<MemoryRegion> = Array(256) { EmptyPage }):
             if (region == EmptyPage)
                 continue;
 
-            if (region.flag == MemoryFlag.HOOK) {
-                memory.map(region)
-            } else {
-                val newRegion = MemoryRegion(region.begin, region.size, region.flag)
-                val size = region.buffer.size
-                System.arraycopy(region.buffer, 0, newRegion.buffer, 0, size)
+            val newRegion = MemoryRegion(region.begin, region.size, region.flag)
+            val size = region.buffer.size
+            System.arraycopy(region.buffer, 0, newRegion.buffer, 0, size)
 
-                memory.map(newRegion)
-            }
+            memory.map(newRegion)
         }
 
         return memory;
@@ -58,9 +54,6 @@ class Memory(private val _list: Array<MemoryRegion> = Array(256) { EmptyPage }):
 
         _list[key] = region
     }
-
-    @Throws(InvalidMemoryException::class)
-    fun map(address: Int, size: Int, hook: (address: Long, read: Boolean, size: Int, value: Int) -> Int) = map(MemoryRegion(address, size, hook))
 
     @Throws(InvalidMemoryException::class)
     fun map(address: Int, size: Int, flag: MemoryFlag) = map(MemoryRegion(address, size, flag))
@@ -83,9 +76,6 @@ class Memory(private val _list: Array<MemoryRegion> = Array(256) { EmptyPage }):
     @Throws(InvalidMemoryException::class)
     fun readString(address: Int, maxSize: Int): String {
         val region = findRegion(address)
-        if (region.flag == MemoryFlag.HOOK)
-            throw InvalidMemoryException(address)
-
         var size = Math.min(region.end - address, maxSize)
         val buffer = ByteArray(size)
 

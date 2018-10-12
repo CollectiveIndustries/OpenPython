@@ -1,6 +1,8 @@
-import machine
+import computer
 
 import uos
+
+from shell import spawn
 
 commands = {}
 
@@ -43,8 +45,14 @@ def cwd(state):
 
 @command
 def reboot(state):
-    machine.reboot()
+    computer.reboot()
     return 0
+
+
+@command
+def python(state):
+    spawn("/bin/python.py")
+    return
 
 
 def main():
