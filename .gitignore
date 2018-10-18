@@ -101,9 +101,7 @@ ENV/
 
 # cmake-build-xxx
 cmake-build-*/
-
-# ignore ThumbAlt
-/ThumbAlt/
 /CMakeLists.txt
-opaot/scripts/*.txt
-opaot/scripts/*.pickle
+
+# manually repack 
+/opmod/src/main/java/kr/pe/ecmaxp/openpython/repack/

@@ -45,7 +45,8 @@
 // Python internal features
 #define MICROPY_ENABLE_EXTERNAL_IMPORT (1)
 #define MICROPY_READER_POSIX (0)
-#define MICROPY_READER_VFS (1)
+#define MICROPY_READER_VFS (0)
+#define MICROPY_READER_CUSTOM_VFS (1)
 #define MICROPY_VM_HOOK_INIT
 #define MICROPY_VM_HOOK_LOOP
 #define MICROPY_VM_HOOK_RETURN
@@ -121,7 +122,7 @@
 #define MICROPY_PY_BUILTINS_MIN_MAX (1)
 #define MICROPY_PY_BUILTINS_POW3 (1)
 #define MICROPY_PY_BUILTINS_HELP (1)
-#define MICROPY_PY_BUILTINS_HELP_TEXT openpie_help_text
+#define MICROPY_PY_BUILTINS_HELP_TEXT openpython_help_text
 #define MICROPY_PY_BUILTINS_HELP_MODULES (1)
 #define MICROPY_PY___FILE__ (1)
 #define MICROPY_PY_MICROPYTHON_MEM_INFO (1)
@@ -203,9 +204,9 @@ extern const struct _mp_print_t debug_print;
 #define INT_FMT "%d"
 
 // Machine settings
-#define MICROPY_HW_BOARD_NAME "openpie"
+#define MICROPY_HW_BOARD_NAME "OpenPython"
 #define MICROPY_HW_MCU_NAME "Cortex-M0"
-#define MICROPY_OPENPIE_VFS (1)
+#define MICROPY_OPENPYTHON_VFS (1)
 
 #define MP_SSIZE_MAX (0x7fffffff)
 #define MP_NEED_LOG2 (1)
@@ -232,10 +233,15 @@ extern const struct _mp_obj_type_t mp_type_SystemError;
 #define MICROPY_PORT_CONSTANTS
 
 #define MICROPY_PORT_ROOT_POINTERS \
-    const char *readline_hist[8];
+    const char *readline_hist[8]; \
+    mp_obj_t signal_hook_obj; \
+    mp_obj_t stdin_hook_obj; \
+    mp_obj_t stdout_hook_obj; \
+    mp_obj_t stderr_hook_obj; \
+    mp_obj_t object_hook_obj; \
 
-#define mp_type_fileio mp_type_vfs_openpie_fileio
-#define mp_type_textio mp_type_vfs_openpie_textio
+#define mp_type_fileio mp_type_vfs_openpython_fileio
+#define mp_type_textio mp_type_vfs_openpython_textio
 
 #define mp_import_stat mp_vfs_import_stat
 #define mp_builtin_open mp_vfs_open
@@ -244,19 +250,24 @@ extern const struct _mp_obj_type_t mp_type_SystemError;
 // Modules
 extern const struct _mp_obj_module_t mp_module_machine;
 extern const struct _mp_obj_module_t mp_module_ucode;
+extern const struct _mp_obj_module_t mp_module_ucomponent;
 extern const struct _mp_obj_module_t mp_module_ucomputer;
 extern const struct _mp_obj_module_t mp_module_uos;
+extern const struct _mp_obj_module_t mp_module_uimp;
 extern const struct _mp_obj_module_t mp_module_utime;
-extern const struct _mp_obj_module_t mp_module_usystem;
 extern const struct _mp_obj_module_t mp_module_umsgpack;
+extern const struct _mp_obj_module_t mp_module_uvalue;
 
 #define MICROPY_PORT_BUILTIN_MODULES \
     { MP_ROM_QSTR(MP_QSTR_machine), MP_ROM_PTR(&mp_module_machine) }, \
     { MP_ROM_QSTR(MP_QSTR_ucode), MP_ROM_PTR(&mp_module_ucode) }, \
+    { MP_ROM_QSTR(MP_QSTR_ucomponent), MP_ROM_PTR(&mp_module_ucomponent) }, \
     { MP_ROM_QSTR(MP_QSTR_ucomputer), MP_ROM_PTR(&mp_module_ucomputer) }, \
     { MP_ROM_QSTR(MP_QSTR_uos), MP_ROM_PTR(&mp_module_uos) }, \
+    { MP_ROM_QSTR(MP_QSTR_uimp), MP_ROM_PTR(&mp_module_uimp) }, \
     { MP_ROM_QSTR(MP_QSTR_utime), MP_ROM_PTR(&mp_module_utime) }, \
     { MP_ROM_QSTR(MP_QSTR_umsgpack), MP_ROM_PTR(&mp_module_umsgpack) }, \
+    { MP_ROM_QSTR(MP_QSTR_uvalue), MP_ROM_PTR(&mp_module_uvalue) }, \
 
 #define MICROPY_PORT_BUILTIN_MODULE_WEAK_LINKS
 

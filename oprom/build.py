@@ -1,4 +1,6 @@
+import io
 import shutil
+import sys
 import traceback
 from pathlib import Path
 from subprocess import check_call, DEVNULL, CalledProcessError
@@ -6,11 +8,16 @@ from typing import TypeVar, Generic, Container
 
 from dataclasses import dataclass
 from elftools.elf.elffile import ELFFile
-from elftools.elf.sections import SymbolTableSection, Section, Symbol
+from elftools.elf.sections import SymbolTableSection, Symbol
+
+import re
 
 FOLDER = Path(__file__).parent
-OPMOD_PATH = FOLDER.parent / "opmod"
-TARGET_FOLDER = OPMOD_PATH / "src/main/resources/assets/openpie/firmwares/debug"  # TODO: place version
+BASE_FOLDER = FOLDER.parent
+OPMOD_PATH = BASE_FOLDER / "opmod"
+SOURCE_SYSCALL_TABLE: Path = OPMOD_PATH / "src/main/java/kr/pe/ecmaxp/openpython/arch/consts/OpenPythonSystemCallTable.kt"
+TARGET_SYSCALL_TABLE: Path = FOLDER / "syscall_table.h"
+TARGET_FOLDER: Path = OPMOD_PATH / "src/main/resources/assets/openpython/firmwares/v1.0.0"  # TODO: place version
 
 
 @dataclass
@@ -77,23 +84,8 @@ def pretty_addr(addr: int, size=8) -> str:
 
 
 def process_elf(elf: ELFFile, map_file: Path):
-    assert elf.get_machine_arch() == "ARM"
-
-    if False:
-        print(">", "section")
-        for section_obj in find_section(elf, Section):  # type: Section
-            section = SimpleSection(section_obj.name, **section_obj.header)
-            if not section.sh_addr:
-                continue
-
-            print(
-                pretty_addr(section.sh_addr),
-                pretty_addr(section.sh_size, size=6),
-                section.sh_flags,
-                section.sh_type,
-                section.name,
-                sep="\t"
-            )
+    if elf.get_machine_arch() != "ARM":
+        raise Exception("Invalid machine arch {} (not ARM)".format(elf.get_machine_arch()))
 
     with map_file.open('w') as fp:
         type2typ = {
@@ -137,10 +129,45 @@ def build(folder: Path = FOLDER, target_folder: Path = TARGET_FOLDER):
     shutil.copyfile(str(build_path / "firmware.bin"), str(target_folder / "firmware.bin"))
     shutil.copyfile(str(build_path / "firmware.elf"), str(target_folder / "firmware.elf"))
     shutil.copyfile(str(build_path / "firmware.elf.map"), str(target_folder / "firmware.elf.map"))
+
+    rom: Path = folder / "eeprom.py"
+    text = rom.read_text()
+    if text.startswith("# --"):
+        text = text[len("# "):]
+    else:
+        raise Exception("eeprom missing magic tag")
+
+    target_rom = (target_folder / "eeprom.py")
+    target_rom.write_text(text)
+
     print(target_folder / "firmware.bin")
 
 
+def parse_syscall_table(path: Path, file=sys.stdout):
+    print(f"// syscall_table.h : {path.relative_to(BASE_FOLDER).as_posix()}", file=file)
+    for line in SOURCE_SYSCALL_TABLE.read_text().splitlines():
+        if line.startswith("package "):
+            continue
+
+        line, sep, comment = line.partition("//")
+        line = line.strip()
+        if not line:
+            print(file=file)
+            continue
+
+        m = re.match("^const val (.*?) = (.*)$", line)
+        if not m:
+            continue
+
+        print(f"#define {m.group(1)} ({m.group(2).replace('or', '|')})", file=file)
+
+
 def main():
+    fp = io.StringIO()
+    parse_syscall_table(SOURCE_SYSCALL_TABLE, fp)
+    if not TARGET_SYSCALL_TABLE.exists() or TARGET_SYSCALL_TABLE.read_text() != fp.getvalue():
+        TARGET_SYSCALL_TABLE.write_text(fp.getvalue())
+
     try:
         build()
         return 0

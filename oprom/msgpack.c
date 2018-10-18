@@ -1,11 +1,14 @@
+#include <string.h>
+
 #include "py/obj.h"
 #include "py/objstr.h"
-#include "py/gc.h"
 #include "py/runtime.h"
 #include "lib/mpack/mpack.h"
-#include <string.h>
+#include "msgpack.h"
+#include "uvalue.h"
 #include "syscall.h"
-#define _debug(s) __syscall2(SYS_DEBUG, (int)s, (int)strlen(s));
+
+mp_obj_t oc_create_value(mp_obj_t raw_value_obj);
 
 mp_obj_t msgpack_load(mpack_reader_t *reader) {
     mpack_tag_t tag = mpack_read_tag(reader);
@@ -81,9 +84,6 @@ mp_obj_t msgpack_load(mpack_reader_t *reader) {
             mpack_done_bin(reader);
             break;
         }
-        case mpack_type_ext:
-            mp_raise_ValueError("invalid tag (ext)");
-            break;
         case mpack_type_array:
         {
             uint32_t count = tag.v.n;
@@ -106,6 +106,26 @@ mp_obj_t msgpack_load(mpack_reader_t *reader) {
             }
 
             mpack_done_array(reader);
+            break;
+        }
+        case mpack_type_ext:
+        {
+            int8_t exttype = tag.exttype;
+            uint32_t length = tag.v.l;
+
+            switch (exttype) {
+                case 1: // OpenComputer.Value
+                {
+                    const char *buf = mpack_read_bytes_inplace(reader, length);
+                    obj = msgpack_loads(buf, length);
+                    obj = oc_create_value(obj);
+                    break;
+                }
+                default:
+                    mp_raise_ValueError("invalid ext");
+            }
+
+            mpack_done_ext(reader);
             break;
         }
         default:
@@ -194,6 +214,12 @@ void msgpack_dump(mpack_writer_t *writer, mp_obj_t obj) {
             }
         }
         mpack_finish_map(writer);
+    } else if (CHECK(uvalue_type)) {
+        uvalue_obj_t *uvalue = (uvalue_obj_t *)obj;
+
+        int UVALUE_TYPE = 1;
+        msgpack_result_t result = msgpack_dumps(uvalue->value);
+        mpack_write_ext(writer, UVALUE_TYPE, (const char *)result.data, result.size);
     } else {
         mp_raise_TypeError(NULL);
     }
@@ -216,8 +242,22 @@ void msgpack_dump_close(mpack_writer_t *writer) {
     }
 }
 
-void msgpack_dumps(mp_obj_t obj, byte **data, size_t *size) {
-    mpack_writer_t *writer = msgpack_dump_new(data, size);
+msgpack_result_t msgpack_dumps(mp_obj_t obj) {
+    msgpack_result_t result = {NULL, 0};
+    mpack_writer_t *writer = msgpack_dump_new(&result.data, &result.size);
     msgpack_dump(writer, obj);
     msgpack_dump_close(writer);
+    return result;
+}
+
+
+msgpack_result_t msgpack_args_dumps(size_t n_args, const mp_obj_t *args) {
+    msgpack_result_t result = {NULL, 0};
+    mpack_writer_t *writer = msgpack_dump_new(&result.data, &result.size);
+    mpack_start_array(writer, n_args);
+    for (int i = 0; i < n_args; i++)
+        msgpack_dump(writer, args[i]);
+    mpack_finish_array(writer);
+    msgpack_dump_close(writer);
+    return result;
 }

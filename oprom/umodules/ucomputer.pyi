@@ -1,6 +1,6 @@
 # machine
 "functions related to the computer"
-from typing import Dict, List, Any, Union, overload, Tuple
+from typing import List, Any, overload, Tuple
 
 
 def shutdown():
@@ -23,57 +23,11 @@ def pop_signal(ticks: int) -> Tuple[str, Tuple[Any]]:
     pass
 
 
-@overload
-def components() -> Dict[str, str]:
+def get_last_error() -> str:
     pass
 
 
-@overload
-def components(device: str) -> List[str]:
-    pass
-
-
-def component_count() -> int:
-    pass
-
-
-def max_components() -> int:
-    pass
-
-
-def methods(address: str) -> List[str]:
-    pass
-
-
-def annotations(address: str, method: str) -> str:
-    pass
-
-
-def invoke(address: str, method: str, *args: Any) -> Union[Any, Tuple[Any]]:
-    pass
-
-
-def get_cost_per_tick() -> float:
-    pass
-
-
-def last_error() -> str:
-    pass
-
-
-def world_time() -> int:
-    pass
-
-
-def up_time() -> float:
-    pass
-
-
-def cpu_time() -> float:
-    pass
-
-
-def users() -> List[str]:
+def get_users() -> List[str]:
     pass
 
 
@@ -90,6 +44,26 @@ def get_computer_address() -> str:
 
 
 def get_tmp_address() -> str:
+    pass
+
+
+def get_energy() -> float:
+    pass
+
+
+def get_max_energy() -> float:
+    pass
+
+
+def get_architectures() -> List[str]:
+    pass
+
+
+def get_architecture() -> str:
+    pass
+
+
+def set_architecture(architecture: str):
     pass
 
 

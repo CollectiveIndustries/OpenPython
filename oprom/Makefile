@@ -18,7 +18,6 @@ INC += -I.
 INC += -I$(TOP)
 INC += -I$(BUILD)
 
-
 CFLAGS_CORTEX_M = -mthumb -fsingle-precision-constant -Wdouble-promotion
 CFLAGS_MCU_m0 = $(CFLAGS_CORTEX_M) -mtune=cortex-m0 -mcpu=cortex-m0 -mfloat-abi=soft
 
@@ -37,7 +36,7 @@ CFLAGS += -O2 -DNDEBUG
 endif
 
 
-LDFLAGS = -nostdlib -T openpie.ld -Map=$@.map --cref
+LDFLAGS = -nostdlib -T openpython.ld -Map=$@.map --cref
 LIBS = $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
 
 # Remove uncalled code from the final image.
@@ -52,13 +51,18 @@ SRC_C = \
 	mphalport.c \
 	modmachine.c \
 	moducode.c \
+	moducomponent.c \
 	moducomputer.c \
 	moduos.c \
+	moduimp.c \
 	modutime.c \
 	modumsgpack.c \
+	moduvalue.c \
 	gccollect.c \
-	openpie_vfs.c \
+	openpython_vfs.c \
+	vfs_reader.c \
 	msgpack.c \
+	syscall.c \
 
 SRC_S = \
 	gchelper_m0.s \

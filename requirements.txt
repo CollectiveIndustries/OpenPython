@@ -1,2 +1,2 @@
-unicorn
-capstone
+dataclasses
+pyelftools
