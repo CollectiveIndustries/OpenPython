@@ -1811,7 +1811,7 @@ Linker script and memory map
                 0x0000000008000000                startup_vector
                 0x000000000800000c                . = ALIGN (0x4)
 
-.text           0x000000000800000c    0x33e74
+.text           0x000000000800000c    0x337a0
                 0x000000000800000c                . = ALIGN (0x4)
  *(.text*)
  .text.nlr_push_tail
@@ -6838,405 +6838,401 @@ Linker script and memory map
                 0x000000000803243c       0x10 build/build/frozen_mpy.o
  .rodata.const_obj_bios__lt_module_gt__bios_2
                 0x000000000803244c       0x10 build/build/frozen_mpy.o
- .rodata.const_obj_bios__lt_module_gt__bios_3
-                0x000000000803245c       0x10 build/build/frozen_mpy.o
- .rodata.const_obj_bios__lt_module_gt__bios_4
-                0x000000000803246c       0x10 build/build/frozen_mpy.o
  .rodata.const_table_data_bios__lt_module_gt_
-                0x000000000803247c        0x4 build/build/frozen_mpy.o
+                0x000000000803245c        0x4 build/build/frozen_mpy.o
  .rodata.const_table_data_bios__lt_module_gt__bios
-                0x0000000008032480       0x14 build/build/frozen_mpy.o
+                0x0000000008032460        0xc build/build/frozen_mpy.o
  .rodata.mp_frozen_mpy_content
-                0x0000000008032494        0x4 build/build/frozen_mpy.o
-                0x0000000008032494                mp_frozen_mpy_content
+                0x000000000803246c        0x4 build/build/frozen_mpy.o
+                0x000000000803246c                mp_frozen_mpy_content
  .rodata.mp_frozen_mpy_names
-                0x0000000008032498        0xa build/build/frozen_mpy.o
-                0x0000000008032498                mp_frozen_mpy_names
- *fill*         0x00000000080324a2        0x2 
+                0x0000000008032470        0xa build/build/frozen_mpy.o
+                0x0000000008032470                mp_frozen_mpy_names
+ *fill*         0x000000000803247a        0x2 
  .rodata.mp_qstr_frozen_const_pool
-                0x00000000080324a4       0x24 build/build/frozen_mpy.o
-                0x00000000080324a4                mp_qstr_frozen_const_pool
+                0x000000000803247c       0x20 build/build/frozen_mpy.o
+                0x000000000803247c                mp_qstr_frozen_const_pool
  .rodata.raw_code_bios__lt_module_gt_
-                0x00000000080324c8       0x10 build/build/frozen_mpy.o
-                0x00000000080324c8                raw_code_bios__lt_module_gt_
+                0x000000000803249c       0x10 build/build/frozen_mpy.o
+                0x000000000803249c                raw_code_bios__lt_module_gt_
  .rodata.raw_code_bios__lt_module_gt__bios
-                0x00000000080324d8       0x10 build/build/frozen_mpy.o
+                0x00000000080324ac       0x10 build/build/frozen_mpy.o
  .rodata.str1.4
-                0x00000000080324e8      0x71c build/build/frozen_mpy.o
+                0x00000000080324bc       0x74 build/build/frozen_mpy.o
  .rodata.do_frozen.str1.4
-                0x0000000008032c04       0x1d build/main.o
- *fill*         0x0000000008032c21        0x3 
+                0x0000000008032530       0x1d build/main.o
+ *fill*         0x000000000803254d        0x3 
  .rodata.main.str1.4
-                0x0000000008032c24        0x8 build/main.o
+                0x0000000008032550        0x8 build/main.o
  .rodata.openpython_help_text
-                0x0000000008032c2c       0x9f build/help.o
-                0x0000000008032c2c                openpython_help_text
- *fill*         0x0000000008032ccb        0x1 
+                0x0000000008032558       0x9f build/help.o
+                0x0000000008032558                openpython_help_text
+ *fill*         0x00000000080325f7        0x1 
  .rodata.Call_Handler
-                0x0000000008032ccc       0x14 build/machine.o
+                0x00000000080325f8       0x14 build/machine.o
  .rodata.Call_Handler.str1.4
-                0x0000000008032ce0       0x20 build/machine.o
+                0x000000000803260c       0x20 build/machine.o
  .rodata.mp_type_SystemError
-                0x0000000008032d00       0x3c build/machine.o
-                0x0000000008032d00                mp_type_SystemError
+                0x000000000803262c       0x3c build/machine.o
+                0x000000000803262c                mp_type_SystemError
  .rodata.nlr_jump_fail.str1.4
-                0x0000000008032d3c        0xe build/machine.o
- *fill*         0x0000000008032d4a        0x2 
+                0x0000000008032668        0xe build/machine.o
+ *fill*         0x0000000008032676        0x2 
  .rodata.mp_hal_delay_ms.str1.4
-                0x0000000008032d4c       0x14 build/mphalport.o
+                0x0000000008032678       0x14 build/mphalport.o
  .rodata.machine_debug_obj
-                0x0000000008032d60        0x8 build/modmachine.o
-                0x0000000008032d60                machine_debug_obj
+                0x000000000803268c        0x8 build/modmachine.o
+                0x000000000803268c                machine_debug_obj
  .rodata.machine_hook_signal_obj
-                0x0000000008032d68        0x8 build/modmachine.o
-                0x0000000008032d68                machine_hook_signal_obj
+                0x0000000008032694        0x8 build/modmachine.o
+                0x0000000008032694                machine_hook_signal_obj
  .rodata.machine_hook_stderr_obj
-                0x0000000008032d70        0x8 build/modmachine.o
-                0x0000000008032d70                machine_hook_stderr_obj
+                0x000000000803269c        0x8 build/modmachine.o
+                0x000000000803269c                machine_hook_stderr_obj
  .rodata.machine_hook_stdin_obj
-                0x0000000008032d78        0x8 build/modmachine.o
-                0x0000000008032d78                machine_hook_stdin_obj
+                0x00000000080326a4        0x8 build/modmachine.o
+                0x00000000080326a4                machine_hook_stdin_obj
  .rodata.machine_hook_stdout_obj
-                0x0000000008032d80        0x8 build/modmachine.o
-                0x0000000008032d80                machine_hook_stdout_obj
+                0x00000000080326ac        0x8 build/modmachine.o
+                0x00000000080326ac                machine_hook_stdout_obj
  .rodata.machine_module_globals
-                0x0000000008032d88       0x10 build/modmachine.o
+                0x00000000080326b4       0x10 build/modmachine.o
  .rodata.machine_module_globals_table
-                0x0000000008032d98       0x30 build/modmachine.o
+                0x00000000080326c4       0x30 build/modmachine.o
  .rodata.mp_module_machine
-                0x0000000008032dc8        0x8 build/modmachine.o
-                0x0000000008032dc8                mp_module_machine
+                0x00000000080326f4        0x8 build/modmachine.o
+                0x00000000080326f4                mp_module_machine
  .rodata.mp_module_ucode
-                0x0000000008032dd0        0x8 build/moducode.o
-                0x0000000008032dd0                mp_module_ucode
+                0x00000000080326fc        0x8 build/moducode.o
+                0x00000000080326fc                mp_module_ucode
  .rodata.str1.4
-                0x0000000008032dd8       0x3e build/moducode.o
- *fill*         0x0000000008032e16        0x2 
+                0x0000000008032704       0x3e build/moducode.o
+ *fill*         0x0000000008032742        0x2 
  .rodata.ucode_MICROPY_BUILD_DATE_obj
-                0x0000000008032e18       0x10 build/moducode.o
+                0x0000000008032744       0x10 build/moducode.o
  .rodata.ucode_MICROPY_GIT_TAG_obj
-                0x0000000008032e28       0x10 build/moducode.o
+                0x0000000008032754       0x10 build/moducode.o
  .rodata.ucode_MICROPY_HW_BOARD_NAME_obj
-                0x0000000008032e38       0x10 build/moducode.o
+                0x0000000008032764       0x10 build/moducode.o
  .rodata.ucode_MICROPY_HW_MCU_NAME_obj
-                0x0000000008032e48       0x10 build/moducode.o
+                0x0000000008032774       0x10 build/moducode.o
  .rodata.ucode_module_globals
-                0x0000000008032e58       0x10 build/moducode.o
+                0x0000000008032784       0x10 build/moducode.o
  .rodata.ucode_module_globals_table
-                0x0000000008032e68       0x40 build/moducode.o
+                0x0000000008032794       0x40 build/moducode.o
  .rodata.ucode_repl_call.str1.4
-                0x0000000008032ea8       0x14 build/moducode.o
+                0x00000000080327d4       0x14 build/moducode.o
  .rodata.ucode_repl_call_obj
-                0x0000000008032ebc        0x8 build/moducode.o
-                0x0000000008032ebc                ucode_repl_call_obj
+                0x00000000080327e8        0x8 build/moducode.o
+                0x00000000080327e8                ucode_repl_call_obj
  .rodata.ucode_repl_compile.str1.4
-                0x0000000008032ec4       0x15 build/moducode.o
- *fill*         0x0000000008032ed9        0x3 
+                0x00000000080327f0       0x15 build/moducode.o
+ *fill*         0x0000000008032805        0x3 
  .rodata.ucode_repl_compile_obj
-                0x0000000008032edc        0x8 build/moducode.o
-                0x0000000008032edc                ucode_repl_compile_obj
+                0x0000000008032808        0x8 build/moducode.o
+                0x0000000008032808                ucode_repl_compile_obj
  .rodata.ucode_repl_input.str1.4
-                0x0000000008032ee4        0xd build/moducode.o
+                0x0000000008032810        0xd build/moducode.o
                                          0x13 (size before relaxing)
- *fill*         0x0000000008032ef1        0x3 
+ *fill*         0x000000000803281d        0x3 
  .rodata.ucode_repl_input_obj
-                0x0000000008032ef4        0x8 build/moducode.o
-                0x0000000008032ef4                ucode_repl_input_obj
+                0x0000000008032820        0x8 build/moducode.o
+                0x0000000008032820                ucode_repl_input_obj
  .rodata.mp_module_ucomponent
-                0x0000000008032efc        0x8 build/moducomponent.o
-                0x0000000008032efc                mp_module_ucomponent
+                0x0000000008032828        0x8 build/moducomponent.o
+                0x0000000008032828                mp_module_ucomponent
  .rodata.ucomponent_get_doc_obj
-                0x0000000008032f04        0x8 build/moducomponent.o
-                0x0000000008032f04                ucomponent_get_doc_obj
+                0x0000000008032830        0x8 build/moducomponent.o
+                0x0000000008032830                ucomponent_get_doc_obj
  .rodata.ucomponent_get_list_obj
-                0x0000000008032f0c        0xc build/moducomponent.o
-                0x0000000008032f0c                ucomponent_get_list_obj
+                0x0000000008032838        0xc build/moducomponent.o
+                0x0000000008032838                ucomponent_get_list_obj
  .rodata.ucomponent_get_methods_obj
-                0x0000000008032f18        0x8 build/moducomponent.o
-                0x0000000008032f18                ucomponent_get_methods_obj
+                0x0000000008032844        0x8 build/moducomponent.o
+                0x0000000008032844                ucomponent_get_methods_obj
  .rodata.ucomponent_get_slot_obj
-                0x0000000008032f20        0x8 build/moducomponent.o
-                0x0000000008032f20                ucomponent_get_slot_obj
+                0x000000000803284c        0x8 build/moducomponent.o
+                0x000000000803284c                ucomponent_get_slot_obj
  .rodata.ucomponent_get_type_obj
-                0x0000000008032f28        0x8 build/moducomponent.o
-                0x0000000008032f28                ucomponent_get_type_obj
+                0x0000000008032854        0x8 build/moducomponent.o
+                0x0000000008032854                ucomponent_get_type_obj
  .rodata.ucomponent_invoke_obj
-                0x0000000008032f30        0xc build/moducomponent.o
-                0x0000000008032f30                ucomponent_invoke_obj
+                0x000000000803285c        0xc build/moducomponent.o
+                0x000000000803285c                ucomponent_invoke_obj
  .rodata.ucomponent_module_globals
-                0x0000000008032f3c       0x10 build/moducomponent.o
+                0x0000000008032868       0x10 build/moducomponent.o
  .rodata.ucomponent_module_globals_table
-                0x0000000008032f4c       0x38 build/moducomponent.o
+                0x0000000008032878       0x38 build/moducomponent.o
  .rodata.mp_module_ucomputer
-                0x0000000008032f84        0x8 build/moducomputer.o
-                0x0000000008032f84                mp_module_ucomputer
+                0x00000000080328b0        0x8 build/moducomputer.o
+                0x00000000080328b0                mp_module_ucomputer
  .rodata.ucomputer_add_user_obj
-                0x0000000008032f8c        0x8 build/moducomputer.o
-                0x0000000008032f8c                ucomputer_add_user_obj
+                0x00000000080328b8        0x8 build/moducomputer.o
+                0x00000000080328b8                ucomputer_add_user_obj
  .rodata.ucomputer_beep_obj
-                0x0000000008032f94        0xc build/moducomputer.o
-                0x0000000008032f94                ucomputer_beep_obj
+                0x00000000080328c0        0xc build/moducomputer.o
+                0x00000000080328c0                ucomputer_beep_obj
  .rodata.ucomputer_crash.str1.4
-                0x0000000008032fa0        0xe build/moducomputer.o
- *fill*         0x0000000008032fae        0x2 
+                0x00000000080328cc        0xe build/moducomputer.o
+ *fill*         0x00000000080328da        0x2 
  .rodata.ucomputer_crash_obj
-                0x0000000008032fb0        0x8 build/moducomputer.o
-                0x0000000008032fb0                ucomputer_crash_obj
+                0x00000000080328dc        0x8 build/moducomputer.o
+                0x00000000080328dc                ucomputer_crash_obj
  .rodata.ucomputer_get_architecture_obj
-                0x0000000008032fb8        0x8 build/moducomputer.o
-                0x0000000008032fb8                ucomputer_get_architecture_obj
+                0x00000000080328e4        0x8 build/moducomputer.o
+                0x00000000080328e4                ucomputer_get_architecture_obj
  .rodata.ucomputer_get_architectures_obj
-                0x0000000008032fc0        0x8 build/moducomputer.o
-                0x0000000008032fc0                ucomputer_get_architectures_obj
+                0x00000000080328ec        0x8 build/moducomputer.o
+                0x00000000080328ec                ucomputer_get_architectures_obj
  .rodata.ucomputer_get_computer_address_obj
-                0x0000000008032fc8        0x8 build/moducomputer.o
-                0x0000000008032fc8                ucomputer_get_computer_address_obj
+                0x00000000080328f4        0x8 build/moducomputer.o
+                0x00000000080328f4                ucomputer_get_computer_address_obj
  .rodata.ucomputer_get_energy_obj
-                0x0000000008032fd0        0x8 build/moducomputer.o
-                0x0000000008032fd0                ucomputer_get_energy_obj
+                0x00000000080328fc        0x8 build/moducomputer.o
+                0x00000000080328fc                ucomputer_get_energy_obj
  .rodata.ucomputer_get_last_error_obj
-                0x0000000008032fd8        0x8 build/moducomputer.o
-                0x0000000008032fd8                ucomputer_get_last_error_obj
+                0x0000000008032904        0x8 build/moducomputer.o
+                0x0000000008032904                ucomputer_get_last_error_obj
  .rodata.ucomputer_get_max_energy_obj
-                0x0000000008032fe0        0x8 build/moducomputer.o
-                0x0000000008032fe0                ucomputer_get_max_energy_obj
+                0x000000000803290c        0x8 build/moducomputer.o
+                0x000000000803290c                ucomputer_get_max_energy_obj
  .rodata.ucomputer_get_tmp_address_obj
-                0x0000000008032fe8        0x8 build/moducomputer.o
-                0x0000000008032fe8                ucomputer_get_tmp_address_obj
+                0x0000000008032914        0x8 build/moducomputer.o
+                0x0000000008032914                ucomputer_get_tmp_address_obj
  .rodata.ucomputer_get_users_obj
-                0x0000000008032ff0        0x8 build/moducomputer.o
-                0x0000000008032ff0                ucomputer_get_users_obj
+                0x000000000803291c        0x8 build/moducomputer.o
+                0x000000000803291c                ucomputer_get_users_obj
  .rodata.ucomputer_module_globals
-                0x0000000008032ff8       0x10 build/moducomputer.o
+                0x0000000008032924       0x10 build/moducomputer.o
  .rodata.ucomputer_module_globals_table
-                0x0000000008033008       0x90 build/moducomputer.o
+                0x0000000008032934       0x90 build/moducomputer.o
  .rodata.ucomputer_pop_signal_obj
-                0x0000000008033098        0x8 build/moducomputer.o
-                0x0000000008033098                ucomputer_pop_signal_obj
+                0x00000000080329c4        0x8 build/moducomputer.o
+                0x00000000080329c4                ucomputer_pop_signal_obj
  .rodata.ucomputer_push_signal_obj
-                0x00000000080330a0        0xc build/moducomputer.o
-                0x00000000080330a0                ucomputer_push_signal_obj
+                0x00000000080329cc        0xc build/moducomputer.o
+                0x00000000080329cc                ucomputer_push_signal_obj
  .rodata.ucomputer_reboot.str1.4
-                0x00000000080330ac        0xf build/moducomputer.o
- *fill*         0x00000000080330bb        0x1 
+                0x00000000080329d8        0xf build/moducomputer.o
+ *fill*         0x00000000080329e7        0x1 
  .rodata.ucomputer_reboot_obj
-                0x00000000080330bc        0x8 build/moducomputer.o
-                0x00000000080330bc                ucomputer_reboot_obj
+                0x00000000080329e8        0x8 build/moducomputer.o
+                0x00000000080329e8                ucomputer_reboot_obj
  .rodata.ucomputer_remove_user_obj
-                0x00000000080330c4        0x8 build/moducomputer.o
-                0x00000000080330c4                ucomputer_remove_user_obj
+                0x00000000080329f0        0x8 build/moducomputer.o
+                0x00000000080329f0                ucomputer_remove_user_obj
  .rodata.ucomputer_set_architecture_obj
-                0x00000000080330cc        0x8 build/moducomputer.o
-                0x00000000080330cc                ucomputer_set_architecture_obj
+                0x00000000080329f8        0x8 build/moducomputer.o
+                0x00000000080329f8                ucomputer_set_architecture_obj
  .rodata.ucomputer_shutdown.str1.4
-                0x00000000080330d4       0x11 build/moducomputer.o
- *fill*         0x00000000080330e5        0x3 
+                0x0000000008032a00       0x11 build/moducomputer.o
+ *fill*         0x0000000008032a11        0x3 
  .rodata.ucomputer_shutdown_obj
-                0x00000000080330e8        0x8 build/moducomputer.o
-                0x00000000080330e8                ucomputer_shutdown_obj
+                0x0000000008032a14        0x8 build/moducomputer.o
+                0x0000000008032a14                ucomputer_shutdown_obj
  .rodata.mp_module_uos
-                0x00000000080330f0        0x8 build/moduos.o
-                0x00000000080330f0                mp_module_uos
+                0x0000000008032a1c        0x8 build/moduos.o
+                0x0000000008032a1c                mp_module_uos
  .rodata.uos_module_globals
-                0x00000000080330f8       0x10 build/moduos.o
+                0x0000000008032a24       0x10 build/moduos.o
  .rodata.uos_module_globals_table
-                0x0000000008033108       0x68 build/moduos.o
+                0x0000000008032a34       0x68 build/moduos.o
  .rodata.mp_module_uimp
-                0x0000000008033170        0x8 build/moduimp.o
-                0x0000000008033170                mp_module_uimp
+                0x0000000008032a9c        0x8 build/moduimp.o
+                0x0000000008032a9c                mp_module_uimp
  .rodata.uimp_module_globals
-                0x0000000008033178       0x10 build/moduimp.o
+                0x0000000008032aa4       0x10 build/moduimp.o
  .rodata.uimp_module_globals_table
-                0x0000000008033188       0x10 build/moduimp.o
+                0x0000000008032ab4       0x10 build/moduimp.o
  .rodata.uimp_new_module_obj
-                0x0000000008033198        0x8 build/moduimp.o
-                0x0000000008033198                uimp_new_module_obj
+                0x0000000008032ac4        0x8 build/moduimp.o
+                0x0000000008032ac4                uimp_new_module_obj
  .rodata.mp_module_utime
-                0x00000000080331a0        0x8 build/modutime.o
-                0x00000000080331a0                mp_module_utime
+                0x0000000008032acc        0x8 build/modutime.o
+                0x0000000008032acc                mp_module_utime
  .rodata.time_module_globals
-                0x00000000080331a8       0x10 build/modutime.o
+                0x0000000008032ad4       0x10 build/modutime.o
  .rodata.time_module_globals_table
-                0x00000000080331b8       0x70 build/modutime.o
+                0x0000000008032ae4       0x70 build/modutime.o
  .rodata.utime_time_cpu_obj
-                0x0000000008033228        0x8 build/modutime.o
-                0x0000000008033228                utime_time_cpu_obj
+                0x0000000008032b54        0x8 build/modutime.o
+                0x0000000008032b54                utime_time_cpu_obj
  .rodata.utime_time_real_obj
-                0x0000000008033230        0x8 build/modutime.o
-                0x0000000008033230                utime_time_real_obj
+                0x0000000008032b5c        0x8 build/modutime.o
+                0x0000000008032b5c                utime_time_real_obj
  .rodata.utime_time_up_obj
-                0x0000000008033238        0x8 build/modutime.o
-                0x0000000008033238                utime_time_up_obj
+                0x0000000008032b64        0x8 build/modutime.o
+                0x0000000008032b64                utime_time_up_obj
  .rodata.utime_time_world_obj
-                0x0000000008033240        0x8 build/modutime.o
-                0x0000000008033240                utime_time_world_obj
+                0x0000000008032b6c        0x8 build/modutime.o
+                0x0000000008032b6c                utime_time_world_obj
  .rodata.mp_module_umsgpack
-                0x0000000008033248        0x8 build/modumsgpack.o
-                0x0000000008033248                mp_module_umsgpack
+                0x0000000008032b74        0x8 build/modumsgpack.o
+                0x0000000008032b74                mp_module_umsgpack
  .rodata.umsgpack_dumps_obj
-                0x0000000008033250        0x8 build/modumsgpack.o
-                0x0000000008033250                umsgpack_dumps_obj
+                0x0000000008032b7c        0x8 build/modumsgpack.o
+                0x0000000008032b7c                umsgpack_dumps_obj
  .rodata.umsgpack_loads_obj
-                0x0000000008033258        0x8 build/modumsgpack.o
-                0x0000000008033258                umsgpack_loads_obj
+                0x0000000008032b84        0x8 build/modumsgpack.o
+                0x0000000008032b84                umsgpack_loads_obj
  .rodata.umsgpack_module_globals
-                0x0000000008033260       0x10 build/modumsgpack.o
+                0x0000000008032b8c       0x10 build/modumsgpack.o
  .rodata.umsgpack_module_globals_table
-                0x0000000008033270       0x18 build/modumsgpack.o
+                0x0000000008032b9c       0x18 build/modumsgpack.o
  .rodata.mp_module_uvalue
-                0x0000000008033288        0x8 build/moduvalue.o
-                0x0000000008033288                mp_module_uvalue
+                0x0000000008032bb4        0x8 build/moduvalue.o
+                0x0000000008032bb4                mp_module_uvalue
  .rodata.uvalue_apply_obj
-                0x0000000008033290        0xc build/moduvalue.o
-                0x0000000008033290                uvalue_apply_obj
+                0x0000000008032bbc        0xc build/moduvalue.o
+                0x0000000008032bbc                uvalue_apply_obj
  .rodata.uvalue_attr.str1.4
-                0x000000000803329c       0x14 build/moduvalue.o
+                0x0000000008032bc8       0x14 build/moduvalue.o
  .rodata.uvalue_call_obj
-                0x000000000803329c        0xc build/moduvalue.o
-                0x000000000803329c                uvalue_call_obj
+                0x0000000008032bc8        0xc build/moduvalue.o
+                0x0000000008032bc8                uvalue_call_obj
  .rodata.uvalue_dispose_obj
-                0x00000000080332a8        0x8 build/moduvalue.o
-                0x00000000080332a8                uvalue_dispose_obj
+                0x0000000008032bd4        0x8 build/moduvalue.o
+                0x0000000008032bd4                uvalue_dispose_obj
  .rodata.uvalue_doc_obj
-                0x00000000080332b0        0xc build/moduvalue.o
-                0x00000000080332b0                uvalue_doc_obj
+                0x0000000008032bdc        0xc build/moduvalue.o
+                0x0000000008032bdc                uvalue_doc_obj
  .rodata.uvalue_hook_value_obj
-                0x00000000080332bc        0x8 build/moduvalue.o
-                0x00000000080332bc                uvalue_hook_value_obj
+                0x0000000008032be8        0x8 build/moduvalue.o
+                0x0000000008032be8                uvalue_hook_value_obj
  .rodata.uvalue_invoke_obj
-                0x00000000080332c4        0xc build/moduvalue.o
-                0x00000000080332c4                uvalue_invoke_obj
+                0x0000000008032bf0        0xc build/moduvalue.o
+                0x0000000008032bf0                uvalue_invoke_obj
  .rodata.uvalue_methods_obj
-                0x00000000080332d0        0x8 build/moduvalue.o
-                0x00000000080332d0                uvalue_methods_obj
+                0x0000000008032bfc        0x8 build/moduvalue.o
+                0x0000000008032bfc                uvalue_methods_obj
  .rodata.uvalue_module_globals
-                0x00000000080332d8       0x10 build/moduvalue.o
+                0x0000000008032c04       0x10 build/moduvalue.o
  .rodata.uvalue_module_globals_table
-                0x00000000080332e8       0x48 build/moduvalue.o
+                0x0000000008032c14       0x48 build/moduvalue.o
  .rodata.uvalue_print.str1.4
-                0x0000000008033330       0x11 build/moduvalue.o
- *fill*         0x0000000008033341        0x3 
+                0x0000000008032c5c       0x11 build/moduvalue.o
+ *fill*         0x0000000008032c6d        0x3 
  .rodata.uvalue_type
-                0x0000000008033344       0x3c build/moduvalue.o
-                0x0000000008033344                uvalue_type
+                0x0000000008032c70       0x3c build/moduvalue.o
+                0x0000000008032c70                uvalue_type
  .rodata.uvalue_unapply_obj
-                0x0000000008033380        0xc build/moduvalue.o
-                0x0000000008033380                uvalue_unapply_obj
+                0x0000000008032cac        0xc build/moduvalue.o
+                0x0000000008032cac                uvalue_unapply_obj
  .rodata.allowed_args.7530
-                0x000000000803338c       0x18 build/openpython_vfs.o
+                0x0000000008032cb8       0x18 build/openpython_vfs.o
  .rodata.check_fd_is_open.isra.0.part.1.str1.4
-                0x00000000080333a4       0x1d build/openpython_vfs.o
+                0x0000000008032cd0       0x1d build/openpython_vfs.o
  .rodata.fileio_stream_p
-                0x00000000080333a4       0x10 build/openpython_vfs.o
+                0x0000000008032cd0       0x10 build/openpython_vfs.o
  .rodata.mp_type_vfs_openpython_fileio
-                0x00000000080333b4       0x3c build/openpython_vfs.o
-                0x00000000080333b4                mp_type_vfs_openpython_fileio
+                0x0000000008032ce0       0x3c build/openpython_vfs.o
+                0x0000000008032ce0                mp_type_vfs_openpython_fileio
  .rodata.mp_type_vfs_openpython_textio
-                0x00000000080333f0       0x3c build/openpython_vfs.o
-                0x00000000080333f0                mp_type_vfs_openpython_textio
+                0x0000000008032d1c       0x3c build/openpython_vfs.o
+                0x0000000008032d1c                mp_type_vfs_openpython_textio
  .rodata.rawfile_locals_dict
-                0x000000000803342c       0x10 build/openpython_vfs.o
+                0x0000000008032d58       0x10 build/openpython_vfs.o
  .rodata.rawfile_locals_dict_table
-                0x000000000803343c       0x60 build/openpython_vfs.o
+                0x0000000008032d68       0x60 build/openpython_vfs.o
  .rodata.textio_stream_p
-                0x000000000803349c       0x10 build/openpython_vfs.o
+                0x0000000008032dc8       0x10 build/openpython_vfs.o
  .rodata.vfs_openpython_file___exit___obj
-                0x00000000080334ac        0xc build/openpython_vfs.o
+                0x0000000008032dd8        0xc build/openpython_vfs.o
  .rodata.vfs_openpython_file_fileno_obj
-                0x00000000080334b8        0x8 build/openpython_vfs.o
+                0x0000000008032de4        0x8 build/openpython_vfs.o
  .rodata.vfs_openpython_file_print.str1.4
-                0x00000000080334c0        0xe build/openpython_vfs.o
- *fill*         0x00000000080334ce        0x2 
+                0x0000000008032dec        0xe build/openpython_vfs.o
+ *fill*         0x0000000008032dfa        0x2 
  .rodata.msgpack_load
-                0x00000000080334d0       0x30 build/msgpack.o
+                0x0000000008032dfc       0x30 build/msgpack.o
  .rodata.msgpack_dump_close.str1.4
-                0x0000000008033500       0x13 build/msgpack.o
- *fill*         0x0000000008033513        0x1 
+                0x0000000008032e2c       0x13 build/msgpack.o
+ *fill*         0x0000000008032e3f        0x1 
  .rodata.msgpack_load.str1.4
-                0x0000000008033514       0x18 build/msgpack.o
+                0x0000000008032e40       0x18 build/msgpack.o
  .rodata.msgpack_loads.str1.4
-                0x000000000803352c       0x18 build/msgpack.o
+                0x0000000008032e58       0x18 build/msgpack.o
  .rodata.mpack_parse_tag.constprop.18
-                0x0000000008033544      0x200 build/lib/mpack/mpack-reader.o
+                0x0000000008032e70      0x200 build/lib/mpack/mpack-reader.o
  .rodata.mp_sys_stderr_obj
-                0x0000000008033744        0x8 build/lib/utils/sys_stdio_mphal.o
-                0x0000000008033744                mp_sys_stderr_obj
+                0x0000000008033070        0x8 build/lib/utils/sys_stdio_mphal.o
+                0x0000000008033070                mp_sys_stderr_obj
  .rodata.mp_sys_stdin_obj
-                0x000000000803374c        0x8 build/lib/utils/sys_stdio_mphal.o
-                0x000000000803374c                mp_sys_stdin_obj
+                0x0000000008033078        0x8 build/lib/utils/sys_stdio_mphal.o
+                0x0000000008033078                mp_sys_stdin_obj
  .rodata.mp_sys_stdout_obj
-                0x0000000008033754        0x8 build/lib/utils/sys_stdio_mphal.o
-                0x0000000008033754                mp_sys_stdout_obj
+                0x0000000008033080        0x8 build/lib/utils/sys_stdio_mphal.o
+                0x0000000008033080                mp_sys_stdout_obj
  .rodata.stdio_buffer_obj
-                0x000000000803375c        0x8 build/lib/utils/sys_stdio_mphal.o
+                0x0000000008033088        0x8 build/lib/utils/sys_stdio_mphal.o
  .rodata.stdio_buffer_obj_stream_p
-                0x0000000008033764       0x10 build/lib/utils/sys_stdio_mphal.o
+                0x0000000008033090       0x10 build/lib/utils/sys_stdio_mphal.o
  .rodata.stdio_buffer_obj_type
-                0x0000000008033774       0x3c build/lib/utils/sys_stdio_mphal.o
+                0x00000000080330a0       0x3c build/lib/utils/sys_stdio_mphal.o
  .rodata.stdio_locals_dict
-                0x00000000080337b0       0x10 build/lib/utils/sys_stdio_mphal.o
+                0x00000000080330dc       0x10 build/lib/utils/sys_stdio_mphal.o
  .rodata.stdio_locals_dict_table
-                0x00000000080337c0       0x50 build/lib/utils/sys_stdio_mphal.o
+                0x00000000080330ec       0x50 build/lib/utils/sys_stdio_mphal.o
  .rodata.stdio_obj___exit___obj
-                0x0000000008033810        0xc build/lib/utils/sys_stdio_mphal.o
+                0x000000000803313c        0xc build/lib/utils/sys_stdio_mphal.o
  .rodata.stdio_obj_print.str1.4
-                0x000000000803381c        0xf build/lib/utils/sys_stdio_mphal.o
- *fill*         0x000000000803382b        0x1 
+                0x0000000008033148        0xf build/lib/utils/sys_stdio_mphal.o
+ *fill*         0x0000000008033157        0x1 
  .rodata.stdio_obj_stream_p
-                0x000000000803382c       0x10 build/lib/utils/sys_stdio_mphal.o
+                0x0000000008033158       0x10 build/lib/utils/sys_stdio_mphal.o
  .rodata.stdio_obj_type
-                0x000000000803383c       0x3c build/lib/utils/sys_stdio_mphal.o
+                0x0000000008033168       0x3c build/lib/utils/sys_stdio_mphal.o
  .rodata.parse_compile_execute.str1.4
-                0x0000000008033878       0x58 build/lib/utils/pyexec.o
+                0x00000000080331a4       0x58 build/lib/utils/pyexec.o
  .rodata.pyexec_friendly_repl.str1.4
-                0x00000000080338d0       0xb3 build/lib/utils/pyexec.o
+                0x00000000080331fc       0xb3 build/lib/utils/pyexec.o
                                          0xc9 (size before relaxing)
- *fill*         0x0000000008033983        0x1 
+ *fill*         0x00000000080332af        0x1 
  .rodata.pyexec_raw_repl.str1.4
-                0x0000000008033984       0x1f build/lib/utils/pyexec.o
+                0x00000000080332b0       0x1f build/lib/utils/pyexec.o
                                          0x27 (size before relaxing)
- *fill*         0x00000000080339a3        0x1 
+ *fill*         0x00000000080332cf        0x1 
  .rodata.mp_hal_move_cursor_back.str1.4
-                0x00000000080339a4        0xd build/lib/mp-readline/readline.o
- *fill*         0x00000000080339b1        0x3 
+                0x00000000080332d0        0xd build/lib/mp-readline/readline.o
+ *fill*         0x00000000080332dd        0x3 
  .rodata.readline_process_char.str1.4
-                0x00000000080339b4        0x4 build/lib/mp-readline/readline.o
+                0x00000000080332e0        0x4 build/lib/mp-readline/readline.o
                                           0x8 (size before relaxing)
- .rodata.half   0x00000000080339b8        0x8 build/lib/libm/math.o
+ .rodata.half   0x00000000080332e4        0x8 build/lib/libm/math.o
  .rodata.npio2_hw
-                0x00000000080339c0       0x80 build/lib/libm/ef_rem_pio2.o
+                0x00000000080332ec       0x80 build/lib/libm/ef_rem_pio2.o
  .rodata.two_over_pi
-                0x0000000008033a40      0x318 build/lib/libm/ef_rem_pio2.o
+                0x000000000803336c      0x318 build/lib/libm/ef_rem_pio2.o
  .rodata.__ieee754_lgammaf_r
-                0x0000000008033d58       0x30 build/lib/libm/erf_lgamma.o
- .rodata.PIo2   0x0000000008033d88       0x2c build/lib/libm/kf_rem_pio2.o
+                0x0000000008033684       0x30 build/lib/libm/erf_lgamma.o
+ .rodata.PIo2   0x00000000080336b4       0x2c build/lib/libm/kf_rem_pio2.o
  .rodata.init_jk
-                0x0000000008033db4        0xc build/lib/libm/kf_rem_pio2.o
- .rodata        0x0000000008033dc0       0x80 /usr/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v6-m/libgcc.a(divsf3.o)
- .rodata        0x0000000008033e40       0x40 /usr/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v6-m/libgcc.a(mulsf3.o)
-                0x0000000008033e80                . = ALIGN (0x4)
-                0x0000000008033e80                _etext = .
-                0x0000000008033e80                _sidata = LOADADDR (.data)
+                0x00000000080336e0        0xc build/lib/libm/kf_rem_pio2.o
+ .rodata        0x00000000080336ec       0x80 /usr/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v6-m/libgcc.a(divsf3.o)
+ .rodata        0x000000000803376c       0x40 /usr/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v6-m/libgcc.a(mulsf3.o)
+                0x00000000080337ac                . = ALIGN (0x4)
+                0x00000000080337ac                _etext = .
+                0x00000000080337ac                _sidata = LOADADDR (.data)
 
-.glue_7         0x0000000008033e80        0x0
- .glue_7        0x0000000008033e80        0x0 linker stubs
+.glue_7         0x00000000080337ac        0x0
+ .glue_7        0x00000000080337ac        0x0 linker stubs
 
-.glue_7t        0x0000000008033e80        0x0
- .glue_7t       0x0000000008033e80        0x0 linker stubs
+.glue_7t        0x00000000080337ac        0x0
+ .glue_7t       0x00000000080337ac        0x0 linker stubs
 
-.vfp11_veneer   0x0000000008033e80        0x0
- .vfp11_veneer  0x0000000008033e80        0x0 linker stubs
+.vfp11_veneer   0x00000000080337ac        0x0
+ .vfp11_veneer  0x00000000080337ac        0x0 linker stubs
 
-.v4_bx          0x0000000008033e80        0x0
- .v4_bx         0x0000000008033e80        0x0 linker stubs
+.v4_bx          0x00000000080337ac        0x0
+ .v4_bx         0x00000000080337ac        0x0 linker stubs
 
-.iplt           0x0000000008033e80        0x0
- .iplt          0x0000000008033e80        0x0 build/py/nlr.o
+.iplt           0x00000000080337ac        0x0
+ .iplt          0x00000000080337ac        0x0 build/py/nlr.o
 
-.rel.dyn        0x0000000008033e80        0x0
- .rel.iplt      0x0000000008033e80        0x0 build/py/nlr.o
+.rel.dyn        0x00000000080337ac        0x0
+ .rel.iplt      0x00000000080337ac        0x0 build/py/nlr.o
 
-.data           0x0000000020000000      0x10c load address 0x0000000008033e80
+.data           0x0000000020000000       0xf4 load address 0x00000000080337ac
                 0x0000000020000000                . = ALIGN (0x4)
                 0x0000000020000000                _sdata = .
  *(.data*)
@@ -7250,47 +7246,47 @@ Linker script and memory map
                 0x000000002000000c       0x1e build/build/frozen_mpy.o
  *fill*         0x000000002000002a        0x2 
  .data.bytecode_data_bios__lt_module_gt__bios
-                0x000000002000002c       0xdf build/build/frozen_mpy.o
+                0x000000002000002c       0xc7 build/build/frozen_mpy.o
  .data.pyexec_mode_kind
-                0x000000002000010b        0x1 build/lib/utils/pyexec.o
-                0x000000002000010b                pyexec_mode_kind
-                0x000000002000010c                . = ALIGN (0x4)
-                0x000000002000010c                _edata = .
+                0x00000000200000f3        0x1 build/lib/utils/pyexec.o
+                0x00000000200000f3                pyexec_mode_kind
+                0x00000000200000f4                . = ALIGN (0x4)
+                0x00000000200000f4                _edata = .
 
-.igot.plt       0x000000002000010c        0x0 load address 0x0000000008033f8c
- .igot.plt      0x000000002000010c        0x0 build/py/nlr.o
+.igot.plt       0x00000000200000f4        0x0 load address 0x00000000080338a0
+ .igot.plt      0x00000000200000f4        0x0 build/py/nlr.o
 
-.bss            0x000000002000010c     0x9fa8 load address 0x0000000008033f8c
-                0x000000002000010c                . = ALIGN (0x4)
-                0x000000002000010c                _sbss = .
+.bss            0x00000000200000f4     0x9fa8 load address 0x00000000080338a0
+                0x00000000200000f4                . = ALIGN (0x4)
+                0x00000000200000f4                _sbss = .
  *(.bss*)
  .bss.utimeq_id
-                0x000000002000010c        0x4 build/extmod/modutimeq.o
+                0x00000000200000f4        0x4 build/extmod/modutimeq.o
  .bss.yasmarang_dat
-                0x0000000020000110        0x1 build/extmod/modurandom.o
- *fill*         0x0000000020000111        0x3 
+                0x00000000200000f8        0x1 build/extmod/modurandom.o
+ *fill*         0x00000000200000f9        0x3 
  .bss.pystack.6875
-                0x0000000020000114     0x9c40 build/main.o
+                0x00000000200000fc     0x9c40 build/main.o
  .bss.pyexec_system_exit
-                0x0000000020009d54        0x4 build/lib/utils/pyexec.o
-                0x0000000020009d54                pyexec_system_exit
+                0x0000000020009d3c        0x4 build/lib/utils/pyexec.o
+                0x0000000020009d3c                pyexec_system_exit
  .bss.repl_display_debugging_info
-                0x0000000020009d58        0x1 build/lib/utils/pyexec.o
- *fill*         0x0000000020009d59        0x3 
- .bss.rl        0x0000000020009d5c       0x1c build/lib/mp-readline/readline.o
+                0x0000000020009d40        0x1 build/lib/utils/pyexec.o
+ *fill*         0x0000000020009d41        0x3 
+ .bss.rl        0x0000000020009d44       0x1c build/lib/mp-readline/readline.o
  *(COMMON)
- COMMON         0x0000000020009d78      0x338 build/py/mpstate.o
-                0x0000000020009d78                mp_state_ctx
- COMMON         0x000000002000a0b0        0x4 build/lib/utils/interrupt_char.o
-                0x000000002000a0b0                mp_interrupt_char
-                0x000000002000a0b4                . = ALIGN (0x4)
-                0x000000002000a0b4                _ebss = .
+ COMMON         0x0000000020009d60      0x338 build/py/mpstate.o
+                0x0000000020009d60                mp_state_ctx
+ COMMON         0x000000002000a098        0x4 build/lib/utils/interrupt_char.o
+                0x000000002000a098                mp_interrupt_char
+                0x000000002000a09c                . = ALIGN (0x4)
+                0x000000002000a09c                _ebss = .
 
-.stack          0x000000002000a0b4     0x4000 load address 0x0000000008033f8c
-                0x000000002000a0b4                . = ALIGN (0x4)
-                0x000000002000e0b4                . = (. + _minimum_stack_size)
- *fill*         0x000000002000a0b4     0x4000 
-                0x000000002000e0b4                . = ALIGN (0x4)
+.stack          0x000000002000a09c     0x4000 load address 0x00000000080338a0
+                0x000000002000a09c                . = ALIGN (0x4)
+                0x000000002000e09c                . = (. + _minimum_stack_size)
+ *fill*         0x000000002000a09c     0x4000 
+                0x000000002000e09c                . = ALIGN (0x4)
 
 .heap           0x0000000060000000    0x20000
                 0x0000000060000000                . = ALIGN (0x4)
